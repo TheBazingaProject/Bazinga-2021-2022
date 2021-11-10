@@ -19,3 +19,11 @@ Nov 6, 2021   - Teleop and Autonomous
               - Autonomous with encoders is starting 
               
               - Tarek is working on AutoAudienceBlue without encoders
+
+Nov 10, 2021  - Testing
+
+              - Forwards and backwards was reverse, issue fixed by making y positive in Teleop. Other than this, Teleop is working fine
+              
+              - Strafing works, only problems are mechanical ones
+              
+              - Autonomous with encoders is having issues with flipping the the right and left motors as well as the calculations to go a certain amount of distance.
