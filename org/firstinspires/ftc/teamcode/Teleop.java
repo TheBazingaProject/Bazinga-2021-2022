@@ -93,20 +93,16 @@ public class Teleop extends OpMode{
      */
     @Override
     public void loop() {
-        double left;
-        double right;
-        double midM;
-
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        left = -gamepad1.left_stick_y;
-        right = -gamepad1.left_stick_y;
-        midM = -gamepad1.left_stick_y;
+        double y = gamepad1.left_stick_y; // Remember, this is reversed!
+        double x = gamepad1.left_stick_x;
+        double rx = gamepad1.right_stick_x;
 
-        robot.fleft.setPower(left);
-        robot.bleft.setPower(left);
-        robot.fright.setPower(right);
-        robot.bright.setPower(right);
-        robot.mid.setPower(midM);
+        robot.fleft.setPower(y + x + rx);
+        robot.bleft.setPower(y - x + rx);
+        robot.fright.setPower(y - x - rx);
+        robot.bright.setPower(y + x - rx);
+        robot.mid.setPower(y);
 
         // Use gamepad left & right Bumpers to open and close the claw
 //        if (gamepad1.right_bumper)
@@ -170,8 +166,8 @@ public class Teleop extends OpMode{
 
         // Send telemetry message to signify robot running;
 //        telemetry.addData("claw",  "Offset = %.2f", clawOffset);
-        telemetry.addData("left",  "%.2f", left);
-        telemetry.addData("right", "%.2f", right);
+        telemetry.addData("y",  "%.2f", y);
+        telemetry.addData("x", "%.2f", x);
     }
 
     /*
