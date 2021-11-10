@@ -30,12 +30,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-//import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+//import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 //import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
@@ -66,23 +66,22 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto_test", group="Pushbot")
+@Autonomous(name="AutoAudienceRed", group="Pushbot")
 //@Disable
-public class PushbotAutoDriveByEncoder_Linear extends LinearOpMode {
+public class AutoAudienceRed extends LinearOpMode {
 
     /* Declare OpMode members. */
     Hardwaremap robot   = new Hardwaremap();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
+    String game = "start";
 
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
+    static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     DRIVE_SPEED             = 0.6;
     static final double     TURN_SPEED              = 0.5;
-
-    String game = "start";
 
     @Override
     public void runOpMode() {
@@ -111,16 +110,17 @@ public class PushbotAutoDriveByEncoder_Linear extends LinearOpMode {
         telemetry.addData("Path0",  "Starting at %7d :%7d",
                           robot.fright.getCurrentPosition(),
                           robot.fleft.getCurrentPosition());
+        telemetry.addLine("update");
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+//         Note: Reverse movement is obtained by setting a negative distance (not speed)
+        encoderDrive(DRIVE_SPEED,  1,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
         encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+       // encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 
 //        robot.leftClaw.setPosition(1.0);            // S4: Stop and close the claw.
 //        robot.rightClaw.setPosition(0.0);
@@ -139,28 +139,38 @@ public class PushbotAutoDriveByEncoder_Linear extends LinearOpMode {
      *  3) Driver stops the opmode running.
      */
     public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
+                             double rightInches, double leftInches,
                              double timeoutS) {
-        int newLeftTarget;
-        int newRightTarget;
+        int newFleftTarget;
+        int newFrightTarget;
+        int newBleftTarget;
+        int newBrightTarget;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftTarget = robot.fright.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = robot.fleft.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            robot.fright.setTargetPosition(newLeftTarget);
-            robot.fleft.setTargetPosition(newRightTarget);
+            newFleftTarget = robot.fleft.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newFrightTarget = robot.fright.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newBleftTarget = robot.bleft.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newBrightTarget = robot.bright.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            robot.fright.setTargetPosition(newFleftTarget);
+            robot.fleft.setTargetPosition(newFrightTarget);
+            robot.bright.setTargetPosition(newBleftTarget);
+            robot.bleft.setTargetPosition(newBrightTarget);
 
             // Turn On RUN_TO_POSITION
             robot.fright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.fleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.bright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.bleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
             runtime.reset();
             robot.fright.setPower(Math.abs(speed));
             robot.fleft.setPower(Math.abs(speed));
+            robot.bright.setPower(Math.abs(speed));
+            robot.bleft.setPower(Math.abs(speed));
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
@@ -170,23 +180,27 @@ public class PushbotAutoDriveByEncoder_Linear extends LinearOpMode {
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                    (runtime.seconds() < timeoutS) &&
-                   (robot.fright.isBusy() && robot.fleft.isBusy())) {
+                   (robot.fright.isBusy() && robot.fleft.isBusy() && robot.bright.isBusy() && robot.bleft.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
-                telemetry.addData("Path2",  "Running at %7d :%7d",
-                                            robot.fright.getCurrentPosition(),
-                                            robot.fleft.getCurrentPosition());
+                telemetry.addLine("fleft   fright   bright   bleft");
+                telemetry.addData("Path1",  "Running to %7d :%7d :%7d :%7d", newFleftTarget,  newFrightTarget, newBrightTarget, newBleftTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d :%7d :%7d", robot.fleft.getCurrentPosition(), robot.fright.getCurrentPosition(), robot.bright.getCurrentPosition(), robot.bleft.getCurrentPosition());
+                telemetry.addData("Encoder", robot.fleft.getTargetPosition());
                 telemetry.update();
             }
 
             // Stop all motion;
-            robot.fright.setPower(0);
-            robot.fleft.setPower(0);
+//            robot.fright.setPower(0);
+//            robot.fleft.setPower(0);
+//            robot.bright.setPower(0);
+//            robot.bleft.setPower(0);
 
             // Turn off RUN_TO_POSITION
             robot.fright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.fleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.bright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.bleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             //  sleep(250);   // optional pause after each move
         }
