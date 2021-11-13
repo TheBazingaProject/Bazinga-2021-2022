@@ -172,8 +172,7 @@ public class BlueAudienceAuto extends OpMode {
 
             case "spin carousel":
                 robot.spinner.setPower(-1);
-                drive(0, 0);
-                if (runtime.seconds() > 2){
+                if (runtime.seconds() > 6){
                     robot.spinner.setPower(0);
                     runtime.reset();
                     task ="turn to hub";
@@ -200,6 +199,21 @@ public class BlueAudienceAuto extends OpMode {
 
             case "deposit payload":
                 //use variable from camera to determine how long the thing lifts up to deposit the payload
+                //But for now, might as well put it to the top
+                if(runtime.seconds() < 1) {
+                    robot.lift.setPower(1);
+                }
+                else if(runtime.seconds() < 2) {
+                    robot.lift.setPower(0);
+                    robot.dump.setPosition(.6);
+            }
+                else if(runtime.seconds() > 3) {
+                    robot.dump.setPosition(0);
+                    robot.lift.setPower(-1);
+                }
+                else if(runtime.seconds() < 4) {
+                    robot.lift.setPower(0);
+                }
                 runtime.reset();
                 task ="turn to parking";
                 break;
