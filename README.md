@@ -33,3 +33,5 @@ Nov 13, 2021  - Autonomous with encoders
               - Hannah figured out how to incorporate encoders into the autonomous that Tarek created
               
               - Haven't been able to test any of the autonomous' due to the robot having mechanical complications
+              
+              - Changed some teleop controls
