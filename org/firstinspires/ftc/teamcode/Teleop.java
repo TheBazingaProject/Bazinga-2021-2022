@@ -105,11 +105,6 @@ public class Teleop extends OpMode{
         robot.bright.setPower(ly - lx + rx);
         robot.mid.setPower(ly);
 
-        double lyy = gamepad2.left_stick_y;
-        double lxx = gamepad2.left_stick_x;
-
-
-
         // Use gamepad left & right Bumpers to open and close the claw
 //        if (gamepad1.right_bumper)
 //            clawOffset += CLAW_SPEED;
