@@ -27,3 +27,9 @@ Nov 10, 2021  - Testing
               - Strafing works, only problems are mechanical ones
               
               - Autonomous with encoders is having issues with flipping the the right and left motors as well as the calculations to go a certain amount of distance.
+
+Nov 13, 2021  - Autonomous with encoders
+
+              - Hannah figured out how to incorporate encoders into the autonomous that Tarek created
+              
+              - Haven't been able to test any of the autonomous' due to the robot having mechanical complications
