@@ -93,16 +93,22 @@ public class Teleop extends OpMode{
      */
     @Override
     public void loop() {
+        // joystick controls for both controllers
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        double y = gamepad1.left_stick_y; // Remember, this is reversed!
-        double x = gamepad1.left_stick_x;
+        double ly = gamepad1.left_stick_y; // Remember, this is reversed!
+        double lx = gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
 
-        robot.fleft.setPower(y + x + rx);
-        robot.bleft.setPower(y - x + rx);
-        robot.fright.setPower(y - x - rx);
-        robot.bright.setPower(y + x - rx);
-        robot.mid.setPower(y);
+        robot.fleft.setPower(ly - lx - rx);
+        robot.bleft.setPower(ly + lx - rx);
+        robot.fright.setPower(ly + lx + rx);
+        robot.bright.setPower(ly - lx + rx);
+        robot.mid.setPower(ly);
+
+        double lyy = gamepad2.left_stick_y;
+        double lxx = gamepad2.left_stick_x;
+
+
 
         // Use gamepad left & right Bumpers to open and close the claw
 //        if (gamepad1.right_bumper)
@@ -121,7 +127,7 @@ public class Teleop extends OpMode{
             robot.spinner.setPower(1);
         } else if (gamepad1.y) {
             robot.spinner.setPower(-1);
-        } else  {
+        } else {
             robot.spinner.setPower(0);
         }
 
@@ -148,26 +154,18 @@ public class Teleop extends OpMode{
             robot.dump.setPosition(1);
         }
 
-        if (gamepad2.right_trigger >= 0.5) {
-            robot.lift.setPower(1);
-        } else if (gamepad2.right_trigger > 0) {
-            robot.lift.setPower(0.5);
-        } else {
-            robot.lift.setPower(0);
-        }
-
-        if (gamepad2.left_trigger >= 0.5) {
-            robot.lift.setPower(-1);
-        } else if (gamepad2.left_trigger > 0) {
-            robot.lift.setPower(-0.50);
+        if (gamepad2.right_stick_y > 0) {
+            robot.lift.setPower(0.8);
+        } else if (gamepad2.right_stick_y < 0) {
+            robot.lift.setPower(-0.8);
         } else {
             robot.lift.setPower(0);
         }
 
         // Send telemetry message to signify robot running;
 //        telemetry.addData("claw",  "Offset = %.2f", clawOffset);
-        telemetry.addData("y",  "%.2f", y);
-        telemetry.addData("x", "%.2f", x);
+        telemetry.addData("ly1",  "%.2f", ly);
+        telemetry.addData("lx1", "%.2f", lx);
     }
 
     /*
