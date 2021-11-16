@@ -35,3 +35,5 @@ Nov 13, 2021  - Autonomous with encoders
               - Haven't been able to test any of the autonomous' due to the robot having mechanical complications
               
               - Changed some teleop controls
+
+Nov 16, 2021  - Test Autonomous
