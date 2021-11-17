@@ -31,8 +31,8 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "AutoAudienceBlueEncoders", group = "Iterative Opmode")
-@Disabled
+@Autonomous(name = "AutoAudienceRedEncoders", group = "Iterative Opmode")
+//@Disabled
 public class AutoAudienceRedEncoders extends OpMode {
 
     // Declare OpMode members.
@@ -50,13 +50,14 @@ public class AutoAudienceRedEncoders extends OpMode {
     private static final String LABEL_FIRST_ELEMENT = "Quad";
     private static final String LABEL_SECOND_ELEMENT = "Single";
 
-    static final double     COUNTS_PER_MOTOR_REV    = 560 ;
+    static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;
+    static final double     MAX_REV                 = 300 ;
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.6;
-    static final double     TURN_SPEED              = 0.5;
+    static final double     DRIVE_SPEED             = 1;
+    static final double     TURN_SPEED              = 0.8;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -104,6 +105,7 @@ public class AutoAudienceRedEncoders extends OpMode {
         parameters.loggingEnabled = false;
 
         robot.imu.initialize(parameters);
+        robot.dump.setPosition(0.7);
 
         while (!robot.imu.isGyroCalibrated()) {
         }
@@ -162,30 +164,46 @@ public class AutoAudienceRedEncoders extends OpMode {
                 runtime.reset();
                 //turn camera to face barcode (before match?)
                 //scan barcode using camera, save value as a variable so we can recall it later
-                task = "move to carousel";
+                task = "move to carousel1";
                 break;
 
-            case "move to carousel":
-                encoderDrive(DRIVE_SPEED, -3, -3);
-                if (checkEncoderDone() == true || runtime.seconds() > 0.8) {
-                    encoderComplete();
-                    runtime.reset();
-                    task = "spin carousel";
-                }
+            case "move to carousel1":
+                encoderDrive(DRIVE_SPEED, -30, -30);
+                task = "spin carousel";
                 break;
+//
+//            case "move to carousel2":
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "spin carousel";
+//                }
+//                break;
+//
+//            case "spin carousel":
+//                robot.spinner.setPower(0.5);
+//                if (runtime.seconds() > 1.5){
+//                    robot.spinner.setPower(0);
+//                    runtime.reset();
+//                    task = "shift to hub";
+//                }
+//                break;
 
             case "spin carousel":
-                robot.spinner.setPower(0.5);
-                if (runtime.seconds() > 1.5){
-                    robot.spinner.setPower(0);
+                if (checkEncoderDone()) {
+                    encoderComplete();
                     runtime.reset();
-                    task = "shift to hub";
+                    robot.spinner.setPower(0.5);
+                    if (runtime.seconds() > 1.5) {
+                        robot.spinner.setPower(0);
+                        runtime.reset();
+                        task = "shift to hub";
+                    }
                 }
-                break;
 
             case "shift to hub":
                 encoderStrafe(DRIVE_SPEED, 6, 0);
-                if (runtime.seconds() > 0.8 || checkEncoderDone() == true){
+                if (checkEncoderDone()){
                     encoderComplete();
                     runtime.reset();
                     task = "move to hub";
@@ -194,7 +212,7 @@ public class AutoAudienceRedEncoders extends OpMode {
 
             case "move to hub":
                 encoderDrive(DRIVE_SPEED,4, 4);
-                if (runtime.seconds() > 2) {
+                if (checkEncoderDone()) {
                     drive(0, 0);
                     task = "turn to hub";
                     runtime.reset();
@@ -209,7 +227,7 @@ public class AutoAudienceRedEncoders extends OpMode {
 
             case "turn to hub":
                 encoderDrive(TURN_SPEED,-4, 4);
-                if (runtime.seconds() > 1.5 || checkEncoderDone() == true) {
+                if (checkEncoderDone() == true) {
                     encoderComplete();
                     runtime.reset();
                     task = "park";
@@ -227,7 +245,7 @@ public class AutoAudienceRedEncoders extends OpMode {
 
             case "forward":
                 encoderDrive(DRIVE_SPEED, 5, 5);
-                if (checkEncoderDone() == true || runtime.seconds() > 2.5){
+                if (checkEncoderDone() == true){
                     encoderComplete();
                     runtime.reset();
                     task = "strafe to wall";
@@ -236,7 +254,7 @@ public class AutoAudienceRedEncoders extends OpMode {
 
             case "strafe to wall":
                 encoderStrafe(DRIVE_SPEED, -12, 12);
-                if (checkEncoderDone() == true || runtime.seconds() > 6){
+                if (checkEncoderDone() == true){
                     encoderComplete();
                     runtime.reset();
                     task = "back into square";
@@ -245,7 +263,7 @@ public class AutoAudienceRedEncoders extends OpMode {
 
             case "back into square":
                 encoderDrive(DRIVE_SPEED, -3.5, -3.5);
-                if (checkEncoderDone() == true || runtime.seconds() > 1.5) {
+                if (checkEncoderDone() == true) {
                     encoderComplete();
                     runtime.reset();
                     task = "stop";
@@ -284,10 +302,10 @@ public class AutoAudienceRedEncoders extends OpMode {
 
 
         // Determine new target position, and pass to motor controller
-        frightTarget = robot.fleft.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-        fleftTarget = robot.fright.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-        brightTarget = robot.bleft.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-        bleftTarget = robot.bright.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+        fleftTarget = robot.fleft.getCurrentPosition() - (int)(leftInches * COUNTS_PER_INCH);
+        frightTarget = robot.fright.getCurrentPosition() - (int)(rightInches * COUNTS_PER_INCH);
+        bleftTarget = robot.bleft.getCurrentPosition() - (int)(leftInches * COUNTS_PER_INCH);
+        brightTarget = robot.bright.getCurrentPosition() - (int)(rightInches * COUNTS_PER_INCH);
         robot.fright.setTargetPosition(frightTarget);
         robot.fleft.setTargetPosition(fleftTarget);
         robot.bright.setTargetPosition(brightTarget);
@@ -300,7 +318,7 @@ public class AutoAudienceRedEncoders extends OpMode {
         robot.bleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // reset the timeout time and start motion.
-        runtime.reset();
+        //runtime.reset();
         robot.fright.setPower(Math.abs(speed));
         robot.fleft.setPower(Math.abs(speed));
         robot.bright.setPower(Math.abs(speed));
@@ -435,7 +453,7 @@ public class AutoAudienceRedEncoders extends OpMode {
      * @param degrees Degrees to turn, + is left - is right
      */
     private void rotate(int degrees, double power) {
-        double leftPower, rightPower;
+        double leftPower,  rightPower;
 
         // restart imu movement tracking.
         resetAngle();
