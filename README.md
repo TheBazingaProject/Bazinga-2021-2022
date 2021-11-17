@@ -37,3 +37,9 @@ Nov 13, 2021  - Autonomous with encoders
               - Changed some teleop controls
 
 Nov 16, 2021  - Test Autonomous
+
+              - The motors stop really early and moves very little
+              
+              - Might not use encoders for the competition this saturday
+              
+              - Will try to fix everything in the next meeting (tomorrow)
