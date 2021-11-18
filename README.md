@@ -43,3 +43,9 @@ Nov 16, 2021  - Test Autonomous
               - Might not use encoders for the competition this saturday
               
               - Will try to fix everything in the next meeting (tomorrow)
+              
+Nov 17, 2021  - Fix Encoders
+
+              - Found the problem to driving, it goes a little too far but good enough
+              
+              - Instead of adding the inches times the Counts per motor rev, we are subtracting them to go in the correct direction
