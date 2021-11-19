@@ -45,6 +45,7 @@ public class RedAudienceAuto extends OpMode {
     Orientation lastAngles = new Orientation();
     double globalAngle, power = .30, correction;
     boolean aButton, bButton, touched;
+    double turnDegrees;
     int load = 1;
     int ringsLoaded = 0;
     int rings = 0;
@@ -247,6 +248,7 @@ public class RedAudienceAuto extends OpMode {
         }
 
         telemetry.addData("task: ", task);
+        telemetry.addData("angle: ", turnDegrees);
         telemetry.addData("sec:  ", runtime.seconds());
         telemetry.update();
     }
