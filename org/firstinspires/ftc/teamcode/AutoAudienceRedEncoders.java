@@ -164,14 +164,30 @@ public class AutoAudienceRedEncoders extends OpMode {
                 runtime.reset();
                 //turn camera to face barcode (before match?)
                 //scan barcode using camera, save value as a variable so we can recall it later
-                task = "move to carousel1";
+                task = "strafe to carousel";
                 break;
 
-            case "move to carousel1":
-                encoderDrive(DRIVE_SPEED, -30, -30);
-                task = "spin carousel";
+//            case "turn a little":
+//                rotate(45, TURN_SPEED);
+//                if (runtime.seconds() > 3 || getAngle() > 45) {
+//                    resetAngle();
+//                    encoderComplete();
+//                    runtime.reset();
+//                }
+//                task = "stop";
+//                break;
+
+            case "strafe to carousel":
+                encoderDrive(TURN_SPEED, -30, 30);
+                task = "stop";
                 break;
-//
+
+//            case "move to carousel":
+//                encoderDrive(DRIVE_SPEED, -30, -30);
+//                resetAngle();
+//                task = "spin carousel";
+//                break;
+////
 //            case "move to carousel2":
 //                if (checkEncoderDone()) {
 //                    encoderComplete();
@@ -281,6 +297,7 @@ public class AutoAudienceRedEncoders extends OpMode {
 
         telemetry.addData("task: ", task);
         telemetry.addData("sec:  ", runtime.seconds());
+        telemetry.addData("angle", getAngle());
         telemetry.addLine("fleft   fright   bright   bleft");
         telemetry.addData("Target",  "Running to %7d :%7d :%7d :%7d", robot.fleft.getTargetPosition(), robot.fright.getTargetPosition(), robot.bright.getTargetPosition(), robot.bleft.getTargetPosition());
         telemetry.addData("Current",  "Running at %7d :%7d :%7d :%7d", robot.fleft.getCurrentPosition(), robot.fright.getCurrentPosition(), robot.bright.getCurrentPosition(), robot.bleft.getCurrentPosition());
@@ -452,45 +469,44 @@ public class AutoAudienceRedEncoders extends OpMode {
      *
      * @param degrees Degrees to turn, + is left - is right
      */
-    private void rotate(int degrees, double power) {
-        double leftPower,  rightPower;
+    public void rotate(int degrees, double power) {
+        double leftPower, rightPower;
 
         // restart imu movement tracking.
-        resetAngle();
+        // resetAngle();
 
         // getAngle() returns + when rotating counter clockwise (left) and - when rotating
         // clockwise (right).
 
+        // slow as we get closer
+        if (Math.abs(getAngle() - degrees) < 0.5) {
+            power = power * 0.0;
+        }
+        else if (Math.abs(getAngle() - degrees) < 5) {
+            power = power * 0.25;
+        }
+        else if (Math.abs(getAngle() - degrees) < 10) {
+            power = power * 0.5;
+        }
+
         if (degrees < 0) {   // turn right.
-            leftPower = power;
-            rightPower = -power;
-        } else if (degrees > 0) {   // turn left.
             leftPower = -power;
             rightPower = power;
+        } else if (degrees > 0) {   // turn left.
+            leftPower = power;
+            rightPower = -power;
         } else return;
 
         // set power to rotate.
         drive(leftPower, rightPower);
 
-        // rotate until turn is completed.
-        if (degrees < 0) {
-            // On right turn we have to get off zero first.
-            while (getAngle() == 0) {
-            }
-
-            while (getAngle() > degrees) {
-            }
-        } else    // left turn.
-            while (getAngle() < degrees) {
-            }
-
         // turn the motors off.
-        drive(0, 0);
+        //drive(0, 0);
 
         // wait for rotation to stop.
 
         // reset angle tracking on new heading.
-        resetAngle();
+        // resetAngle();
     }
 
     private void initVuforia() {
