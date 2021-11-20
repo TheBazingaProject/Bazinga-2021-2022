@@ -37,9 +37,7 @@ public class AutoAudienceRedEncoders extends OpMode {
 
     // Declare OpMode members.
     Hardwaremap robot = new Hardwaremap();
-    ElapsedTime runtime = new ElapsedTime();
-    Movement movement = new Movement();
-
+    private ElapsedTime runtime = new ElapsedTime();
 
     String task = "Start";
 
@@ -51,6 +49,18 @@ public class AutoAudienceRedEncoders extends OpMode {
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
     private static final String LABEL_SECOND_ELEMENT = "Single";
+
+    static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;
+    static final double     MAX_REV                 = 300 ;
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     LIFT_WHEEL_DIAMETER_IN  = 1.0 ;
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     LIFT_COUNTS_PER_INCH    = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (LIFT_WHEEL_DIAMETER_IN * 3.1415);
+    static final double     DRIVE_SPEED             = 1;
+    static final double     TURN_SPEED              = 0.8;
+    static final double     LIFT_SPEED              = 0.8;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -144,7 +154,7 @@ public class AutoAudienceRedEncoders extends OpMode {
      */
     @Override
     public void start() {
-        movement.resetEncoder();
+        resetEncoder();
     }
 
     /*
@@ -157,9 +167,106 @@ public class AutoAudienceRedEncoders extends OpMode {
                 runtime.reset();
                 //turn camera to face barcode (before match?)
                 //scan barcode using camera, save value as a variable so we can recall it later
-                task = "strafe to carousel";
+                task = "strafe out of wall";
                 break;
 
+            case "strafe out of wall":
+                encoderStrafe(TURN_SPEED, -5.5, 5.5);
+                task = "move to carousel";
+                break;
+
+            case "move to carousel":
+                if (checkEncoderDone()) {
+                    encoderComplete();
+                    encoderDrive(0.15, -17, -17);
+                    task = "spin duck off1";
+                }
+                break;
+
+            case "spin duck off1":
+                if (checkEncoderDone()) {
+                    encoderComplete();
+                    runtime.reset();
+                    task = "spin duck off2";
+                }
+                break;
+
+            case "spin duck off2":
+                robot.spinner.setPower(-0.7);
+                if (runtime.seconds() > 4.5) {
+                    robot.spinner.setPower(0);
+                    runtime.reset();
+                    task = "strafe out more";
+                }
+                break;
+
+            case "strafe out more":
+                encoderStrafe(TURN_SPEED, -3, 3);
+                task = "back up to 3-layer thingy";
+                break;
+
+            case "back up to 3-layer thingy":
+                if (checkEncoderDone()) {
+                    encoderComplete();
+                    encoderDrive(DRIVE_SPEED, 43.5, 43.5);
+                    task = "turn to face thingy";
+                }
+                break;
+
+            case "turn to face thingy":
+                if (checkEncoderDone()) {
+                    encoderComplete();
+                    encoderDrive(TURN_SPEED, -23.75, 23.75);
+                    task = "forward to thingy";
+                }
+                break;
+
+            case "forward to thingy":
+                if (checkEncoderDone()) {
+                    encoderComplete();
+                    encoderDrive(0.5, -22.5, -22.5);
+                    runtime.reset();
+                    task = "lift up to drop";
+                }
+                break;
+
+            case "lift up to drop":
+                if (checkEncoderDone()) {
+                    encoderComplete();
+                    lifting(LIFT_SPEED, 6.5);
+                    task = "dumpy";
+                }
+                break;
+
+            case "dumpy":
+                if (checkEncoderDone()) {
+                    encoderComplete();
+                    runtime.reset();
+                    task = "dumpy2";
+                }
+                break;
+
+            case "dumpy2":
+                robot.dump.setPosition(0.15);
+                if (runtime.seconds() > 1.5) {
+                    robot.dump.setPosition(0.7);
+                    runtime.reset();
+                    task = "turn to park";
+                }
+
+            case "turn to park":
+                encoderDrive(TURN_SPEED, -23.75, 23.75);
+                task = "SPEEDY TO PARK";
+                break;
+
+            case "SPEEDY TO PARK":
+                if (checkEncoderDone()) {
+                    encoderComplete();
+                    robot.intake.setPower(-1);
+                    encoderDrive(DRIVE_SPEED, 54, 54);
+                    task = "stop";
+                }
+                break;
 //            case "turn a little":
 //                rotate(45, TURN_SPEED);
 //                if (runtime.seconds() > 3 || getAngle() > 45) {
@@ -170,20 +277,15 @@ public class AutoAudienceRedEncoders extends OpMode {
 //                task = "stop";
 //                break;
 
-            case "strafe to carousel":
-                movement.encoderDrive(movement.TURN_SPEED, -30, 30);
-                task = "stop";
-                break;
-
 //            case "move to carousel":
-//                movement.encoderDrive(DRIVE_SPEED, -30, -30);
-//                movement.resetAngle();
+//                encoderDrive(DRIVE_SPEED, -30, -30);
+//                resetAngle();
 //                task = "spin carousel";
 //                break;
 ////
 //            case "move to carousel2":
-//                if (movement.checkEncoderDone()) {
-//                    movement.encoderComplete();
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
 //                    runtime.reset();
 //                    task = "spin carousel";
 //                }
@@ -198,35 +300,35 @@ public class AutoAudienceRedEncoders extends OpMode {
 //                }
 //                break;
 
-            case "spin carousel":
-                if (movement.checkEncoderDone()) {
-                    movement.encoderComplete();
-                    runtime.reset();
-                    robot.spinner.setPower(0.5);
-                    if (runtime.seconds() > 1.5) {
-                        robot.spinner.setPower(0);
-                        runtime.reset();
-                        task = "shift to hub";
-                    }
-                }
-
-            case "shift to hub":
-                movement.encoderStrafe(movement.DRIVE_SPEED, 6, 0);
-                if (movement.checkEncoderDone()){
-                    movement.encoderComplete();
-                    runtime.reset();
-                    task = "move to hub";
-                }
-                break;
-
-            case "move to hub":
-                movement.encoderDrive(movement.DRIVE_SPEED,4, 4);
-                if (movement.checkEncoderDone()) {
-                    movement.drive(0, 0);
-                    task = "turn to hub";
-                    runtime.reset();
-                }
-                break;
+//            case "spin carousel":
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
+//                    runtime.reset();
+//                    robot.spinner.setPower(0.5);
+//                    if (runtime.seconds() > 1.5) {
+//                        robot.spinner.setPower(0);
+//                        runtime.reset();
+//                        task = "shift to hub";
+//                    }
+//                }
+//
+//            case "shift to hub":
+//                encoderStrafe(DRIVE_SPEED, 6, 0);
+//                if (checkEncoderDone()){
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "move to hub";
+//                }
+//                break;
+//
+//            case "move to hub":
+//                encoderDrive(DRIVE_SPEED,4, 4);
+//                if (checkEncoderDone()) {
+//                    drive(0, 0);
+//                    task = "turn to hub";
+//                    runtime.reset();
+//                }
+//                break;
 
 //            case "deposit payload":
 //                //use variable from camera to determine how long the thing lifts up to deposit the payload
@@ -234,50 +336,50 @@ public class AutoAudienceRedEncoders extends OpMode {
 //                task ="turn to parking";
 //                break;
 
-            case "turn to hub":
-                movement.encoderDrive(movement.TURN_SPEED,-4, 4);
-                if (movement.checkEncoderDone() == true) {
-                    movement.encoderComplete();
-                    runtime.reset();
-                    task = "park";
-                }
-                break;
-
-            case "lift to top hub":
-                robot.lift.setPower(1);
-                if (runtime.seconds() > 0.6){
-                    robot.lift.setPower(0);
-                    runtime.reset();
-                    task = "forward";
-                }
-                break;
-
-            case "forward":
-                movement.encoderDrive(movement.DRIVE_SPEED, 5, 5);
-                if (movement.checkEncoderDone() == true){
-                    movement.encoderComplete();
-                    runtime.reset();
-                    task = "strafe to wall";
-                }
-                break;
-
-            case "strafe to wall":
-                movement.encoderStrafe(movement.DRIVE_SPEED, -12, 12);
-                if (movement.checkEncoderDone() == true){
-                    movement.encoderComplete();
-                    runtime.reset();
-                    task = "back into square";
-                }
-                break;
-
-            case "back into square":
-                movement.encoderDrive(movement.DRIVE_SPEED, -3.5, -3.5);
-                if (movement.checkEncoderDone() == true) {
-                    movement.encoderComplete();
-                    runtime.reset();
-                    task = "stop";
-                }
-                break;
+//            case "turn to hub":
+//                encoderDrive(TURN_SPEED,-4, 4);
+//                if (checkEncoderDone() == true) {
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "park";
+//                }
+//                break;
+//
+//            case "lift to top hub":
+//                robot.lift.setPower(1);
+//                if (runtime.seconds() > 0.6){
+//                    robot.lift.setPower(0);
+//                    runtime.reset();
+//                    task = "forward";
+//                }
+//                break;
+//
+//            case "forward":
+//                encoderDrive(DRIVE_SPEED, 5, 5);
+//                if (checkEncoderDone() == true){
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "strafe to wall";
+//                }
+//                break;
+//
+//            case "strafe to wall":
+//                encoderStrafe(DRIVE_SPEED, -12, 12);
+//                if (checkEncoderDone() == true){
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "back into square";
+//                }
+//                break;
+//
+//            case "back into square":
+//                encoderDrive(DRIVE_SPEED, -3.5, -3.5);
+//                if (checkEncoderDone() == true) {
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "stop";
+//                }
+//                break;
 
             case "stop":
                 if (tfod != null) {
@@ -290,7 +392,7 @@ public class AutoAudienceRedEncoders extends OpMode {
 
         telemetry.addData("task: ", task);
         telemetry.addData("sec:  ", runtime.seconds());
-        telemetry.addData("angle", movement.getAngle());
+        telemetry.addData("angle", getAngle());
         telemetry.addLine("fleft   fright   bright   bleft");
         telemetry.addData("Target",  "Running to %7d :%7d :%7d :%7d", robot.fleft.getTargetPosition(), robot.fright.getTargetPosition(), robot.bright.getTargetPosition(), robot.bleft.getTargetPosition());
         telemetry.addData("Current",  "Running at %7d :%7d :%7d :%7d", robot.fleft.getCurrentPosition(), robot.fright.getCurrentPosition(), robot.bright.getCurrentPosition(), robot.bleft.getCurrentPosition());
@@ -304,6 +406,215 @@ public class AutoAudienceRedEncoders extends OpMode {
     public void stop() {
     }
 
+    public void lifting(double speed, double liftInches) {
+        int liftTarget;
+
+        liftTarget = robot.lift.getCurrentPosition() + (int)(liftInches * LIFT_COUNTS_PER_INCH);
+        robot.lift.setTargetPosition(liftTarget);
+
+        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.setPower(Math.abs(speed));
+    }
+
+    public void encoderDrive(double speed, double rightInches, double leftInches) {
+        int frightTarget;
+        int fleftTarget;
+        int brightTarget;
+        int bleftTarget;
+
+
+        // Determine new target position, and pass to motor controller
+        fleftTarget = robot.fleft.getCurrentPosition() - (int)(leftInches * COUNTS_PER_INCH);
+        frightTarget = robot.fright.getCurrentPosition() - (int)(rightInches * COUNTS_PER_INCH);
+        bleftTarget = robot.bleft.getCurrentPosition() - (int)(leftInches * COUNTS_PER_INCH);
+        brightTarget = robot.bright.getCurrentPosition() - (int)(rightInches * COUNTS_PER_INCH);
+        robot.fright.setTargetPosition(frightTarget);
+        robot.fleft.setTargetPosition(fleftTarget);
+        robot.bright.setTargetPosition(brightTarget);
+        robot.bleft.setTargetPosition(bleftTarget);
+
+        // Turn On RUN_TO_POSITION
+        robot.fright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.fleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.bright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.bleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // reset the timeout time and start motion.
+        //runtime.reset();
+        robot.fright.setPower(Math.abs(speed));
+        robot.fleft.setPower(Math.abs(speed));
+        robot.bright.setPower(Math.abs(speed));
+        robot.bleft.setPower(Math.abs(speed));
+    }
+
+    // frightBleft is positive and fleftBright is negative to strafe left
+    public void encoderStrafe(double speed,
+                              double frightBleftInches, double fleftBrightInches) {
+        int newFleftTarget;
+        int newFrightTarget;
+        int newBleftTarget;
+        int newBrightTarget;
+
+        // Determine new target position, and pass to motor controller
+        newFleftTarget = robot.fleft.getCurrentPosition() + (int)(fleftBrightInches * COUNTS_PER_INCH);
+        newFrightTarget = robot.fright.getCurrentPosition() + (int)(frightBleftInches * COUNTS_PER_INCH);
+        newBleftTarget = robot.bleft.getCurrentPosition() + (int)(frightBleftInches * COUNTS_PER_INCH);
+        newBrightTarget = robot.bright.getCurrentPosition() + (int)(fleftBrightInches * COUNTS_PER_INCH);
+
+        robot.fright.setTargetPosition(newFrightTarget);
+        robot.fleft.setTargetPosition(newFleftTarget);
+        robot.bright.setTargetPosition(newBrightTarget);
+        robot.bleft.setTargetPosition(newBleftTarget);
+
+        // Turn On RUN_TO_POSITION
+        robot.fright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.fleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.bright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.bleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // reset the timeout time and start motion.
+        runtime.reset();
+        robot.fright.setPower(Math.abs(speed));
+        robot.fleft.setPower(Math.abs(speed));
+        robot.bright.setPower(Math.abs(speed));
+        robot.bleft.setPower(Math.abs(speed));
+    }
+
+    public boolean checkEncoderDone() {
+        return !(robot.fright.isBusy() || robot.fleft.isBusy() || robot.bright.isBusy() || robot.bleft.isBusy() || robot.lift.isBusy());
+    }
+
+    public void encoderComplete(){
+        robot.fright.setPower(0);
+        robot.fleft.setPower(0);
+        robot.bright.setPower(0);
+        robot.bleft.setPower(0);
+        robot.lift.setPower(0);
+
+        // Turn off RUN_TO_POSITION
+        robot.fright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.fleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.bright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.bleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+
+    private void resetEncoder() {
+        position = robot.fleft.getCurrentPosition();
+    }
+
+    private double getPosition() {
+        return robot.fleft.getCurrentPosition() - position;
+    }
+
+    public void drive(double leftPower, double rightPower) {
+        robot.bleft.setPower(leftPower);
+        robot.bright.setPower(rightPower);
+        robot.fleft.setPower(leftPower);
+        robot.fright.setPower(rightPower);
+    }
+
+    private void resetAngle() {
+        lastAngles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        globalAngle = 0;
+    }
+
+    /**
+     * Get current cumulative angle rotation from last reset.
+     *
+     * @return Angle in degrees. + = left, - = right.
+     */
+    private double getAngle() {
+        // We experimentally determined the Z axis is the axis we want to use for heading angle.
+        // We have to process the angle because the imu works in euler angles so the Z axis is
+        // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
+        // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
+
+        Orientation angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
+
+        if (deltaAngle < -180)
+            deltaAngle += 360;
+        else if (deltaAngle > 180)
+            deltaAngle -= 360;
+
+        globalAngle += deltaAngle;
+
+        lastAngles = angles;
+
+        return globalAngle;
+    }
+
+    /**
+     * See if we are moving in a straight line and if not return a power correction value.
+     *
+     * @return Power adjustment, + is adjust left - is adjust right.
+     */
+    private double checkDirection() {
+        // The gain value determines how sensitive the correction is to direction changes.
+        // You will have to experiment with your robot to get small smooth direction changes
+        // to stay on a straight line.
+        double correction, angle, gain = .10;
+
+        angle = getAngle();
+
+        if (angle == 0)
+            correction = 0;             // no adjustment.
+        else
+            correction = -angle;        // reverse sign of angle for correction.
+
+        correction = correction * gain;
+
+        return correction;
+    }
+
+    /**
+     * Rotate left or right the number of degrees. Does not support turning more than 180 degrees.
+     *
+     * @param degrees Degrees to turn, + is left - is right
+     */
+    public void rotate(int degrees, double power) {
+        double leftPower, rightPower;
+
+        // restart imu movement tracking.
+        // resetAngle();
+
+        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
+        // clockwise (right).
+
+        // slow as we get closer
+        if (Math.abs(getAngle() - degrees) < 0.5) {
+            power = power * 0.0;
+        }
+        else if (Math.abs(getAngle() - degrees) < 5) {
+            power = power * 0.25;
+        }
+        else if (Math.abs(getAngle() - degrees) < 10) {
+            power = power * 0.5;
+        }
+
+        if (degrees < 0) {   // turn right.
+            leftPower = -power;
+            rightPower = power;
+        } else if (degrees > 0) {   // turn left.
+            leftPower = power;
+            rightPower = -power;
+        } else return;
+
+        // set power to rotate.
+        drive(leftPower, rightPower);
+
+        // turn the motors off.
+        //drive(0, 0);
+
+        // wait for rotation to stop.
+
+        // reset angle tracking on new heading.
+        // resetAngle();
+    }
 
     private void initVuforia() {
         /*
