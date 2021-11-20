@@ -178,7 +178,7 @@ public class AutoAudienceRedEncoders extends OpMode {
             case "move to carousel":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(0.15, -17, -17);
+                    encoderDrive(0.15, -17.5, -17.5);
                     task = "spin duck off1";
                 }
                 break;
@@ -216,7 +216,7 @@ public class AutoAudienceRedEncoders extends OpMode {
             case "turn to face thingy":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(TURN_SPEED, -23.75, 23.75);
+                    encoderDrive(TURN_SPEED, -23.5, 23.5);
                     task = "forward to thingy";
                 }
                 break;
@@ -224,7 +224,7 @@ public class AutoAudienceRedEncoders extends OpMode {
             case "forward to thingy":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(0.5, -22.5, -22.5);
+                    encoderDrive(0.3, -22, -22);
                     runtime.reset();
                     task = "lift up to drop";
                 }
@@ -248,7 +248,7 @@ public class AutoAudienceRedEncoders extends OpMode {
 
             case "dumpy2":
                 robot.dump.setPosition(0.15);
-                if (runtime.seconds() > 1.5) {
+                if (runtime.seconds() > 6) {
                     robot.dump.setPosition(0.7);
                     runtime.reset();
                     task = "turn to park";
@@ -262,8 +262,7 @@ public class AutoAudienceRedEncoders extends OpMode {
             case "SPEEDY TO PARK":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    robot.intake.setPower(-1);
-                    encoderDrive(DRIVE_SPEED, 54, 54);
+                    encoderDrive(DRIVE_SPEED, 44, 44);
                     task = "stop";
                 }
                 break;
