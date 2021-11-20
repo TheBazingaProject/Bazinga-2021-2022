@@ -169,7 +169,7 @@ public class Teleop extends OpMode{
 
         // gamepad 2 - accessories
         if (gamepad2.x) {
-            robot.dump.setPosition(0.1);
+            robot.dump.setPosition(0.175);
         } else {
             robot.dump.setPosition(0.7);
         }
