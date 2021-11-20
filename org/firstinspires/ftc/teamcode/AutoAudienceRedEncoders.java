@@ -178,7 +178,7 @@ public class AutoAudienceRedEncoders extends OpMode {
             case "move to carousel":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(0.15, -17.5, -17.5);
+                    encoderDrive(0.15, -17, -17);
                     task = "spin duck off1";
                 }
                 break;
@@ -224,19 +224,20 @@ public class AutoAudienceRedEncoders extends OpMode {
             case "forward to thingy":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(0.3, -20, -20);
+                    encoderDrive(0.3, -18, -18);
+                    lifting(LIFT_SPEED, 18);
                     runtime.reset();
-                    task = "lift up to drop";
-                }
-                break;
-
-            case "lift up to drop":
-                if (checkEncoderDone()) {
-                    encoderComplete();
-                    lifting(LIFT_SPEED, 6.5);
                     task = "dumpy";
                 }
                 break;
+
+//            case "lift up to drop":
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
+//                    lifting(LIFT_SPEED, 6.5);
+//                    task = "dumpy";
+//                }
+//                break;
 
             case "dumpy":
                 if (checkEncoderDone()) {
@@ -248,7 +249,7 @@ public class AutoAudienceRedEncoders extends OpMode {
 
             case "dumpy2":
                 robot.dump.setPosition(0.15);
-                if (runtime.seconds() > 6) {
+                if (runtime.seconds() > 4) {
                     robot.dump.setPosition(0.7);
                     runtime.reset();
                     task = "turn to park";
