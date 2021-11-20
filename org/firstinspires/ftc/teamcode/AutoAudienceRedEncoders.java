@@ -52,15 +52,6 @@ public class AutoAudienceRedEncoders extends OpMode {
     private static final String LABEL_FIRST_ELEMENT = "Quad";
     private static final String LABEL_SECOND_ELEMENT = "Single";
 
-    static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;
-    static final double     MAX_REV                 = 300 ;
-    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 1;
-    static final double     TURN_SPEED              = 0.8;
-
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -180,7 +171,7 @@ public class AutoAudienceRedEncoders extends OpMode {
 //                break;
 
             case "strafe to carousel":
-                movement.encoderDrive(TURN_SPEED, -30, 30);
+                movement.encoderDrive(movement.TURN_SPEED, -30, 30);
                 task = "stop";
                 break;
 
@@ -220,7 +211,7 @@ public class AutoAudienceRedEncoders extends OpMode {
                 }
 
             case "shift to hub":
-                movement.encoderStrafe(DRIVE_SPEED, 6, 0);
+                movement.encoderStrafe(movement.DRIVE_SPEED, 6, 0);
                 if (movement.checkEncoderDone()){
                     movement.encoderComplete();
                     runtime.reset();
@@ -229,7 +220,7 @@ public class AutoAudienceRedEncoders extends OpMode {
                 break;
 
             case "move to hub":
-                movement.encoderDrive(DRIVE_SPEED,4, 4);
+                movement.encoderDrive(movement.DRIVE_SPEED,4, 4);
                 if (movement.checkEncoderDone()) {
                     movement.drive(0, 0);
                     task = "turn to hub";
@@ -244,7 +235,7 @@ public class AutoAudienceRedEncoders extends OpMode {
 //                break;
 
             case "turn to hub":
-                movement.encoderDrive(TURN_SPEED,-4, 4);
+                movement.encoderDrive(movement.TURN_SPEED,-4, 4);
                 if (movement.checkEncoderDone() == true) {
                     movement.encoderComplete();
                     runtime.reset();
@@ -262,7 +253,7 @@ public class AutoAudienceRedEncoders extends OpMode {
                 break;
 
             case "forward":
-                movement.encoderDrive(DRIVE_SPEED, 5, 5);
+                movement.encoderDrive(movement.DRIVE_SPEED, 5, 5);
                 if (movement.checkEncoderDone() == true){
                     movement.encoderComplete();
                     runtime.reset();
@@ -271,7 +262,7 @@ public class AutoAudienceRedEncoders extends OpMode {
                 break;
 
             case "strafe to wall":
-                movement.encoderStrafe(DRIVE_SPEED, -12, 12);
+                movement.encoderStrafe(movement.DRIVE_SPEED, -12, 12);
                 if (movement.checkEncoderDone() == true){
                     movement.encoderComplete();
                     runtime.reset();
@@ -280,7 +271,7 @@ public class AutoAudienceRedEncoders extends OpMode {
                 break;
 
             case "back into square":
-                movement.encoderDrive(DRIVE_SPEED, -3.5, -3.5);
+                movement.encoderDrive(movement.DRIVE_SPEED, -3.5, -3.5);
                 if (movement.checkEncoderDone() == true) {
                     movement.encoderComplete();
                     runtime.reset();
