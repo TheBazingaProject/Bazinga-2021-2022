@@ -59,3 +59,5 @@ Nov 19, 2021  - Test Autonomous for competition
               - AutoAudienceBlueEncoders is still a process and we do not have a far side auto
               
               - Added a lift encoder
+              
+              - In teleop, we added a reverse, so whenever a driver 1 presses bumper, it will reverse the driving mechanism
