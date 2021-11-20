@@ -59,6 +59,7 @@ public class Teleop extends OpMode{
     Hardwaremap robot       = new Hardwaremap(); // use the class created to define a Pushbot's hardware
     double          clawOffset  = 0.0 ;                  // Servo mid position
     final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
+    boolean         reverse     = false ;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -102,11 +103,26 @@ public class Teleop extends OpMode{
         double lx = gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
 
-        robot.fleft.setPower(ly - lx - rx);
-        robot.bleft.setPower(ly + lx - rx);
-        robot.fright.setPower(ly + lx + rx);
-        robot.bright.setPower(ly - lx + rx);
         robot.mid.setPower(ly);
+
+        if (gamepad1.left_bumper && reverse == true) {
+            reverse = false;
+        } else if (gamepad1.right_bumper && reverse == false) {
+            reverse = true;
+        }
+
+        if (reverse == true) {
+            robot.fleft.setPower(ly - lx - rx);
+            robot.bleft.setPower(ly + lx - rx);
+            robot.fright.setPower(ly + lx + rx);
+            robot.bright.setPower(ly - lx + rx);
+        }
+        if (reverse == false) {
+            robot.fleft.setPower(-ly + lx + rx);
+            robot.bleft.setPower(-ly - lx + rx);
+            robot.fright.setPower(-ly - lx - rx);
+            robot.bright.setPower(-ly + lx - rx);
+        }
 
         // Use gamepad left & right Bumpers to open and close the claw
 //        if (gamepad1.right_bumper)
@@ -129,25 +145,31 @@ public class Teleop extends OpMode{
             robot.spinner.setPower(0);
         }
 
-        if (gamepad1.right_trigger > 0 && gamepad1.right_trigger < 0.5) {
-            robot.intake.setPower(0.5);
-        } else if (gamepad1.right_trigger >= 0.5) {
-            robot.intake.setPower(1);
-        } else {
-            robot.intake.setPower(0);
-        }
+//        if (gamepad1.right_trigger > 0 && gamepad1.right_trigger < 0.5) {
+//            robot.intake.setPower(0.5);
+//        } else if (gamepad1.right_trigger >= 0.5) {
+//            robot.intake.setPower(1);
+//        } else {
+//            robot.intake.setPower(0);
+//        }
+//
+//        if (gamepad1.left_trigger > 0) {
+//            robot.intake.setPower(-1);
+//        } else {
+//            robot.intake.setPower(0);
+//        }
 
-        if (gamepad1.left_trigger > 0 && gamepad1.left_trigger < 0.5) {
-            robot.intake.setPower(-0.5);
-        } else if (gamepad1.left_trigger >= 0.5) {
+        if (-gamepad1.right_stick_y > 0) {
             robot.intake.setPower(-1);
+        } else if (-gamepad2.right_stick_y < 0) {
+            robot.intake.setPower(0);
         } else {
             robot.intake.setPower(0);
         }
 
         // gamepad 2 - accessories
         if (gamepad2.x) {
-            robot.dump.setPosition(0);
+            robot.dump.setPosition(0.1);
         } else {
             robot.dump.setPosition(0.7);
         }
@@ -165,6 +187,9 @@ public class Teleop extends OpMode{
         telemetry.addData("ly1",  "%.2f", ly);
         telemetry.addData("lx1", "%.2f", lx);
         telemetry.addData("dump", robot.dump.getPosition());
+        telemetry.addData("trigger", gamepad1.left_trigger);
+        telemetry.addData("reverse?", reverse);
+        telemetry.update();
     }
 
     /*
