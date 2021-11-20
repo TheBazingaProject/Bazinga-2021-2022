@@ -49,3 +49,13 @@ Nov 17, 2021  - Fix Encoders
               - Found the problem to driving, it goes a little too far but good enough
               
               - Instead of adding the inches times the Counts per motor rev, we are subtracting them to go in the correct direction
+              
+Nov 19, 2021  - Test Autonomous for competition
+
+              - AutoAudienceRedEncoders works very well, exact measurements with only a small magin of error
+              
+              - Just a few more fine tuning things and it will work very well (we decided not to do odometry or use a camera for the competition tomorrow)
+ 
+              - AutoAudienceBlueEncoders is still a process and we do not have a far side auto
+              
+              - Added a lift encoder
