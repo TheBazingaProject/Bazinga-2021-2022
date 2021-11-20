@@ -114,9 +114,9 @@ public class Hardwaremap
 
         // Direction of motors
         fright.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        fleft.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        fleft.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         bright.setDirection(DcMotor.Direction.FORWARD);
-        bleft.setDirection(DcMotor.Direction.FORWARD);
+        bleft.setDirection(DcMotor.Direction.REVERSE);
         mid.setDirection(DcMotorSimple.Direction.FORWARD);
         lift.setDirection(DcMotor.Direction.FORWARD);
         spinner.setDirection(DcMotor.Direction.FORWARD);
