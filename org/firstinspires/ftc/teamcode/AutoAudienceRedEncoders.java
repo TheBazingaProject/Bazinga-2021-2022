@@ -216,7 +216,7 @@ public class AutoAudienceRedEncoders extends OpMode {
             case "turn to face thingy":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(TURN_SPEED, -23.5, 23.5);
+                    encoderDrive(TURN_SPEED, -23, 23);
                     task = "forward to thingy";
                 }
                 break;
@@ -224,7 +224,7 @@ public class AutoAudienceRedEncoders extends OpMode {
             case "forward to thingy":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(0.3, -22, -22);
+                    encoderDrive(0.3, -20, -20);
                     runtime.reset();
                     task = "lift up to drop";
                 }
@@ -253,9 +253,10 @@ public class AutoAudienceRedEncoders extends OpMode {
                     runtime.reset();
                     task = "turn to park";
                 }
+                break;
 
             case "turn to park":
-                encoderDrive(TURN_SPEED, -23.75, 23.75);
+                encoderDrive(TURN_SPEED, -24, 24);
                 task = "SPEEDY TO PARK";
                 break;
 
