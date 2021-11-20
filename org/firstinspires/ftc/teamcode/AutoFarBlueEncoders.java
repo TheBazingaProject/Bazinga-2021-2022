@@ -177,7 +177,7 @@ public class AutoFarBlueEncoders extends OpMode {
 
             case "forward to hub":
                 if (checkEncoderDone()) {
-                    encoderDrive(DRIVE_SPEED, -70, -70);
+                    encoderDrive(DRIVE_SPEED, -80, -80);
                     task = "stop";
                 }
                 break;
