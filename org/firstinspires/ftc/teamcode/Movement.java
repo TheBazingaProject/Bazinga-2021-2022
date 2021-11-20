@@ -19,6 +19,7 @@ public class Movement {
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     DRIVE_SPEED             = 1;
     static final double     TURN_SPEED              = 0.8;
+
     Hardwaremap robot = new Hardwaremap();
 
     public void encoderDrive(double speed, double rightInches, double leftInches) {
