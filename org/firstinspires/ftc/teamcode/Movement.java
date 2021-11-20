@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -15,12 +17,29 @@ public class Movement {
     static final double     MAX_REV                 = 300 ;
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     LIFT_WHEEL_DIAMETER_IN  = 1.0 ;
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     LIFT_COUNTS_PER_INCH    = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (LIFT_WHEEL_DIAMETER_IN * 3.1415);
     static final double     DRIVE_SPEED             = 1;
     static final double     TURN_SPEED              = 0.8;
+    static final double     LIFT_SPEED              = 0.8;
 
     Hardwaremap robot = new Hardwaremap();
+
+    public void init(Hardwaremap mhwmap) {
+        robot = mhwmap;
+    }
+
+    public void lifting(double speed, double liftInches) {
+        int liftTarget;
+
+        liftTarget = robot.lift.getCurrentPosition() + (int)(liftInches * LIFT_COUNTS_PER_INCH);
+        robot.lift.setTargetPosition(liftTarget);
+
+        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.setPower(Math.abs(speed));
+    }
 
     public void encoderDrive(double speed, double rightInches, double leftInches) {
         int frightTarget;
@@ -28,12 +47,12 @@ public class Movement {
         int brightTarget;
         int bleftTarget;
 
-
         // Determine new target position, and pass to motor controller
         fleftTarget = robot.fleft.getCurrentPosition() - (int)(leftInches * COUNTS_PER_INCH);
         frightTarget = robot.fright.getCurrentPosition() - (int)(rightInches * COUNTS_PER_INCH);
         bleftTarget = robot.bleft.getCurrentPosition() - (int)(leftInches * COUNTS_PER_INCH);
         brightTarget = robot.bright.getCurrentPosition() - (int)(rightInches * COUNTS_PER_INCH);
+
         robot.fright.setTargetPosition(frightTarget);
         robot.fleft.setTargetPosition(fleftTarget);
         robot.bright.setTargetPosition(brightTarget);
