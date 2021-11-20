@@ -171,14 +171,14 @@ public class AutoAudienceRedEncoders extends OpMode {
                 break;
 
             case "strafe out of wall":
-                encoderStrafe(TURN_SPEED, -5.5, 5.5);
+                encoderStrafe(TURN_SPEED, -7, 7);
                 task = "move to carousel";
                 break;
 
             case "move to carousel":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(0.15, -17, -17);
+                    encoderDrive(0.15, -18, -18);
                     task = "spin duck off1";
                 }
                 break;
@@ -216,7 +216,7 @@ public class AutoAudienceRedEncoders extends OpMode {
             case "turn to face thingy":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(TURN_SPEED, -23, 23);
+                    encoderDrive(TURN_SPEED, -22, 22);
                     task = "forward to thingy";
                 }
                 break;
@@ -224,7 +224,7 @@ public class AutoAudienceRedEncoders extends OpMode {
             case "forward to thingy":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(0.3, -18, -18);
+                    encoderDrive(0.3, -15.5, -15.5);
                     lifting(LIFT_SPEED, 18);
                     runtime.reset();
                     task = "dumpy";
@@ -252,19 +252,25 @@ public class AutoAudienceRedEncoders extends OpMode {
                 if (runtime.seconds() > 4) {
                     robot.dump.setPosition(0.7);
                     runtime.reset();
-                    task = "turn to park";
+                    task = "back up a little";
                 }
                 break;
 
+            case "back up a little":
+                encoderDrive(DRIVE_SPEED, 5, 5);
+                task = "turn to park";
+
             case "turn to park":
-                encoderDrive(TURN_SPEED, -24, 24);
-                task = "SPEEDY TO PARK";
+                if (checkEncoderDone()) {
+                    encoderDrive(TURN_SPEED, -24, 24);
+                    task = "SPEEDY TO PARK";
+                }
                 break;
 
             case "SPEEDY TO PARK":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(DRIVE_SPEED, 44, 44);
+                    encoderDrive(DRIVE_SPEED, 48, 48);
                     task = "stop";
                 }
                 break;
