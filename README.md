@@ -61,3 +61,13 @@ Nov 19, 2021  - Test Autonomous for competition
               - Added a lift encoder
               
               - In teleop, we added a reverse, so whenever a driver 1 presses bumper, it will reverse the driving mechanism
+              
+Dec 1, 2021   - Camera and competition summary
+    
+              - Competition was on November 20th, programmed all four autonomous' during the competition
+              
+              - The far autonomous' just move forward and back up into the warehouse
+              
+              - Trying to incorporate Vuforia and TFOD, haven't tested yet, needs a lot of work
+              
+              - Added a claw for the capstone (Teleop)
