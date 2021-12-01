@@ -29,11 +29,11 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -65,6 +65,7 @@ public class Hardwaremap
     public DcMotor mid = null;
 
     public Servo dump = null;
+    public Servo claw = null;
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
@@ -111,6 +112,7 @@ public class Hardwaremap
         // Servos
         dump = hwMap.get(Servo.class, "dump");
         dump.setPosition(MID_SERVO);
+        claw = hwMap.get(Servo.class, "claw");
 
         // Direction of motors
         fright.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
@@ -139,6 +141,7 @@ public class Hardwaremap
         bright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         bleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -150,3 +153,4 @@ public class Hardwaremap
 //        rightClaw.setPosition(MID_SERVO);
     }
 }
+
