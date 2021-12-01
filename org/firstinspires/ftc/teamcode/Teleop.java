@@ -182,6 +182,13 @@ public class Teleop extends OpMode{
             robot.lift.setPower(0);
         }
 
+        // close
+        if (gamepad2.right_bumper){
+            robot.claw.setPosition(150);
+        } else if (gamepad2.left_bumper) {
+            robot.claw.setPosition(-10);
+        }
+
         // Send telemetry message to signify robot running;
 //        telemetry.addData("claw",  "Offset = %.2f", clawOffset);
         telemetry.addData("ly1",  "%.2f", ly);
