@@ -68,6 +68,8 @@ public class Hardwaremap
     public Servo claw = null;
 
     public static final double MID_SERVO       =  0.5 ;
+    public static final double CLOSE_SERVO       =  0.1 ;
+    public static final double OPEN_SERVO       =  0.9 ;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
 
@@ -113,6 +115,7 @@ public class Hardwaremap
         dump = hwMap.get(Servo.class, "dump");
         dump.setPosition(MID_SERVO);
         claw = hwMap.get(Servo.class, "claw");
+        claw.setPosition(CLOSE_SERVO);
 
         // Direction of motors
         fright.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
@@ -153,4 +156,3 @@ public class Hardwaremap
 //        rightClaw.setPosition(MID_SERVO);
     }
 }
-
