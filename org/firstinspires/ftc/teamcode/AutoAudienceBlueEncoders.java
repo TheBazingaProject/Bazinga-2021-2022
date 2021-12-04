@@ -31,9 +31,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "AutoAudienceBlueEncoders", group = "Iterative Opmode")
+@Autonomous(name = "AutoAudienceBlueMovement", group = "Iterative Opmode")
 //@Disabled
-public class AutoAudienceBlueEncoders extends OpMode {
+public class AutoAudienceBlueMovement extends OpMode {
 
     // Declare OpMode members.
     Hardwaremap robot = new Hardwaremap();
@@ -87,14 +87,14 @@ public class AutoAudienceBlueEncoders extends OpMode {
         robot.init(hardwareMap);
         movement.init(robot);
 
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled = false;
-
-        robot.imu.initialize(parameters);
+//        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+//
+//        parameters.mode = BNO055IMU.SensorMode.IMU;
+//        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+//        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+////      parameters.loggingEnabled = false;
+//
+//        robot.imu.initialize(parameters);
         robot.dump.setPosition(0.7);
 
         while (!robot.imu.isGyroCalibrated()) {
@@ -154,75 +154,226 @@ public class AutoAudienceBlueEncoders extends OpMode {
                 runtime.reset();
                 //turn camera to face barcode (before match?)
                 //scan barcode using camera, save value as a variable so we can recall it later
+                task = "back up from wall";
+                break;
+
+            case "back up from wall":
+                movement.encoderDrive(movement.DRIVE_SPEED, 3.5, 3.5);
                 task = "strafe to carousel";
                 break;
 
             case "strafe to carousel":
-                runtime.reset();
-                movement.encoderStrafe(movement.TURN_SPEED,5, -5);
-                movement.resetEncoder();
+                if (movement.checkEncoderDone()) {
+                    movement.encoderComplete();
+                    movement.encoderStrafe(movement.TURN_SPEED, 25, -25);
+                    task = "spin duck off1";
+                }
+                break;
+
+            case "spin duck off1":
                 if (movement.checkEncoderDone()) {
                     movement.encoderComplete();
                     runtime.reset();
+                    task = "spin duck off2";
                 }
-                task = "spin carousel";
                 break;
 
-            case "spin carousel":
+            case "spin duck off2":
                 robot.spinner.setPower(0.7);
                 if (runtime.seconds() > 4.5) {
                     robot.spinner.setPower(0);
                     runtime.reset();
-                    task = "turn to hub";
+                    task = "go to square";
                 }
                 break;
 
-            case "turn to hub":
-                movement.encoderDrive(movement.TURN_SPEED, -5,5);
-                movement.resetEncoder();
-                if (movement.checkEncoderDone()) {
-                    movement.encoderComplete();
-                    runtime.reset();
-                }
-                task = "move to hub";
-                break;
-
-            case "move to hub":
-                movement.encoderDrive(movement.DRIVE_SPEED, 5,5);
-                movement.resetEncoder();
-                if (movement.checkEncoderDone()) {
-                    movement.encoderComplete();
-                    runtime.reset();
-                }
-                task = "deposit payload";
-                break;
-
-            case "deposit payload":
-                movement.lifting(movement.LIFT_SPEED, 6.5);
-                if (movement.checkEncoderDone()) {
-                    movement.encoderComplete();
-                    runtime.reset();
-                }
-                robot.dump.setPosition(0.15);
-                if (runtime.seconds() > 6) {
-                    robot.dump.setPosition(0.7);
-                    runtime.reset();
-                    task = "turn to park";
-                }
-
-            case "turn to park":
-                movement.encoderDrive(movement.TURN_SPEED, -24, 24);
-                if (movement.checkEncoderDone()) {
-                    movement.encoderComplete();
-                    task = "park";
-                }
-                break;
-
-            case "park":
-                movement.encoderDrive(movement.DRIVE_SPEED, 44, 44);
+            case "go to square":
+                movement.encoderDrive(movement.DRIVE_SPEED, 21, 21);
                 task = "stop";
                 break;
 
+//            case "back up to 3-layer thingy":
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
+//                    encoderDrive(DRIVE_SPEED, 43.5, 43.5);
+//                    task = "turn to face thingy";
+//                }
+//                break;
+//
+//            case "turn to face thingy":
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
+//                    encoderDrive(TURN_SPEED, -23, 23);
+//                    task = "forward to thingy";
+//                }
+//                break;
+//
+//            case "forward to thingy":
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
+//                    encoderDrive(0.3, -16, -16);
+//                    lifting(LIFT_SPEED, 18);
+//                    runtime.reset();
+//                    task = "dumpy";
+//                }
+//                break;
+//
+////            case "lift up to drop":
+////                if (checkEncoderDone()) {
+////                    encoderComplete();
+////                    lifting(LIFT_SPEED, 6.5);
+////                    task = "dumpy";
+////                }
+////                break;
+//
+//            case "dumpy":
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "dumpy2";
+//                }
+//                break;
+//
+//            case "dumpy2":
+//                robot.dump.setPosition(0.15);
+//                if (runtime.seconds() > 4) {
+//                    robot.dump.setPosition(0.7);
+//                    runtime.reset();
+//                    task = "back up a little";
+//                }
+//                break;
+//
+//            case "back up a little":
+//                encoderDrive(DRIVE_SPEED, 5, 5);
+//                task = "turn to park";
+//
+//            case "turn to park":
+//                if (checkEncoderDone()) {
+//                    encoderDrive(TURN_SPEED, -24, 24);
+//                    task = "SPEEDY TO PARK";
+//                }
+//                break;
+//
+//            case "SPEEDY TO PARK":
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
+//                    encoderDrive(DRIVE_SPEED, 48, 48);
+//                    task = "stop";
+//                }
+//                break;
+//            case "turn a little":
+//                rotate(45, TURN_SPEED);
+//                if (runtime.seconds() > 3 || getAngle() > 45) {
+//                    resetAngle();
+//                    encoderComplete();
+//                    runtime.reset();
+//                }
+//                task = "stop";
+//                break;
+
+//            case "move to carousel":
+//                encoderDrive(DRIVE_SPEED, -30, -30);
+//                resetAngle();
+//                task = "spin carousel";
+//                break;
+////
+//            case "move to carousel2":
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "spin carousel";
+//                }
+//                break;
+//
+//            case "spin carousel":
+//                robot.spinner.setPower(0.5);
+//                if (runtime.seconds() > 1.5){
+//                    robot.spinner.setPower(0);
+//                    runtime.reset();
+//                    task = "shift to hub";
+//                }
+//                break;
+
+//            case "spin carousel":
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
+//                    runtime.reset();
+//                    robot.spinner.setPower(0.5);
+//                    if (runtime.seconds() > 1.5) {
+//                        robot.spinner.setPower(0);
+//                        runtime.reset();
+//                        task = "shift to hub";
+//                    }
+//                }
+//
+//            case "shift to hub":
+//                encoderStrafe(DRIVE_SPEED, 6, 0);
+//                if (checkEncoderDone()){
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "move to hub";
+//                }
+//                break;
+//
+//            case "move to hub":
+//                encoderDrive(DRIVE_SPEED,4, 4);
+//                if (checkEncoderDone()) {
+//                    drive(0, 0);
+//                    task = "turn to hub";
+//                    runtime.reset();
+//                }
+//                break;
+
+//            case "deposit payload":
+//                //use variable from camera to determine how long the thing lifts up to deposit the payload
+//                runtime.reset();
+//                task ="turn to parking";
+//                break;
+
+//            case "turn to hub":
+//                encoderDrive(TURN_SPEED,-4, 4);
+//                if (checkEncoderDone() == true) {
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "park";
+//                }
+//                break;
+//
+//            case "lift to top hub":
+//                robot.lift.setPower(1);
+//                if (runtime.seconds() > 0.6){
+//                    robot.lift.setPower(0);
+//                    runtime.reset();
+//                    task = "forward";
+//                }
+//                break;
+//
+//            case "forward":
+//                encoderDrive(DRIVE_SPEED, 5, 5);
+//                if (checkEncoderDone() == true){
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "strafe to wall";
+//                }
+//                break;
+//
+//            case "strafe to wall":
+//                encoderStrafe(DRIVE_SPEED, -12, 12);
+//                if (checkEncoderDone() == true){
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "back into square";
+//                }
+//                break;
+//
+//            case "back into square":
+//                encoderDrive(DRIVE_SPEED, -3.5, -3.5);
+//                if (checkEncoderDone() == true) {
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "stop";
+//                }
+//                break;
 
             case "stop":
                 if (tfod != null) {
