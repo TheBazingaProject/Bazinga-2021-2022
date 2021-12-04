@@ -31,9 +31,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "AutoAudienceRedEncodersMovement", group = "Iterative Opmode")
+@Autonomous(name = "AutoAudienceRedMovement", group = "Iterative Opmode")
 //@Disabled
-public class AutoAudienceRedEncodersMovement extends OpMode {
+public class AutoAudienceRedMovement extends OpMode {
 
     // Declare OpMode members.
     Hardwaremap robot = new Hardwaremap();
@@ -157,17 +157,15 @@ public class AutoAudienceRedEncodersMovement extends OpMode {
                 task = "strafe out of wall";
                 break;
 
-//
-
             case "strafe out of wall":
-                movement.encoderStrafe(movement.TURN_SPEED, -5.5, 5.5);
+                movement.encoderStrafe(movement.TURN_SPEED, -7, 7);
                 task = "move to carousel";
                 break;
 
             case "move to carousel":
                 if (movement.checkEncoderDone()) {
                     movement.encoderComplete();
-                    movement.encoderDrive(0.15, -17.5, -17.5);
+                    movement.encoderDrive(0.15, -18, -18);
                     task = "spin duck off1";
                 }
                 break;
@@ -205,7 +203,7 @@ public class AutoAudienceRedEncodersMovement extends OpMode {
             case "turn to face thingy":
                 if (movement.checkEncoderDone()) {
                     movement.encoderComplete();
-                    movement.encoderDrive(movement.TURN_SPEED, -23, 23);
+                    movement.encoderDrive(movement.TURN_SPEED, -22, 22);
                     task = "forward to thingy";
                 }
                 break;
@@ -213,19 +211,20 @@ public class AutoAudienceRedEncodersMovement extends OpMode {
             case "forward to thingy":
                 if (movement.checkEncoderDone()) {
                     movement.encoderComplete();
-                    movement.encoderDrive(0.3, -20, -20);
+                    movement.encoderDrive(0.3, -15.5, -15.5);
+                    movement.lifting(movement.LIFT_SPEED, 18);
                     runtime.reset();
-                    task = "lift up to drop";
-                }
-                break;
-
-            case "lift up to drop":
-                if (movement.checkEncoderDone()) {
-                    movement.encoderComplete();
-                    movement.lifting(movement.LIFT_SPEED, 6.5);
                     task = "dumpy";
                 }
                 break;
+
+//            case "lift up to drop":
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
+//                    lifting(LIFT_SPEED, 6.5);
+//                    task = "dumpy";
+//                }
+//                break;
 
             case "dumpy":
                 if (movement.checkEncoderDone()) {
@@ -237,24 +236,144 @@ public class AutoAudienceRedEncodersMovement extends OpMode {
 
             case "dumpy2":
                 robot.dump.setPosition(0.15);
-                if (runtime.seconds() > 6) {
+                if (runtime.seconds() > 4) {
                     robot.dump.setPosition(0.7);
                     runtime.reset();
-                    task = "turn to park";
+                    task = "back up a little";
                 }
+                break;
+
+            case "back up a little":
+                movement.encoderDrive(movement.DRIVE_SPEED, 5, 5);
+                task = "turn to park";
 
             case "turn to park":
-                movement.encoderDrive(movement.TURN_SPEED, -24, 24);
-                task = "SPEEDY TO PARK";
+                if (movement.checkEncoderDone()) {
+                    movement.encoderDrive(movement.TURN_SPEED, -24, 24);
+                    task = "SPEEDY TO PARK";
+                }
                 break;
 
             case "SPEEDY TO PARK":
                 if (movement.checkEncoderDone()) {
                     movement.encoderComplete();
-                    movement.encoderDrive(movement.DRIVE_SPEED, 44, 44);
+                    movement.encoderDrive(movement.DRIVE_SPEED, 48, 48);
                     task = "stop";
                 }
                 break;
+//            case "turn a little":
+//                rotate(45, TURN_SPEED);
+//                if (runtime.seconds() > 3 || getAngle() > 45) {
+//                    resetAngle();
+//                    encoderComplete();
+//                    runtime.reset();
+//                }
+//                task = "stop";
+//                break;
+
+//            case "move to carousel":
+//                encoderDrive(DRIVE_SPEED, -30, -30);
+//                resetAngle();
+//                task = "spin carousel";
+//                break;
+////
+//            case "move to carousel2":
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "spin carousel";
+//                }
+//                break;
+//
+//            case "spin carousel":
+//                robot.spinner.setPower(0.5);
+//                if (runtime.seconds() > 1.5){
+//                    robot.spinner.setPower(0);
+//                    runtime.reset();
+//                    task = "shift to hub";
+//                }
+//                break;
+
+//            case "spin carousel":
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
+//                    runtime.reset();
+//                    robot.spinner.setPower(0.5);
+//                    if (runtime.seconds() > 1.5) {
+//                        robot.spinner.setPower(0);
+//                        runtime.reset();
+//                        task = "shift to hub";
+//                    }
+//                }
+//
+//            case "shift to hub":
+//                encoderStrafe(DRIVE_SPEED, 6, 0);
+//                if (checkEncoderDone()){
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "move to hub";
+//                }
+//                break;
+//
+//            case "move to hub":
+//                encoderDrive(DRIVE_SPEED,4, 4);
+//                if (checkEncoderDone()) {
+//                    drive(0, 0);
+//                    task = "turn to hub";
+//                    runtime.reset();
+//                }
+//                break;
+
+//            case "deposit payload":
+//                //use variable from camera to determine how long the thing lifts up to deposit the payload
+//                runtime.reset();
+//                task ="turn to parking";
+//                break;
+
+//            case "turn to hub":
+//                encoderDrive(TURN_SPEED,-4, 4);
+//                if (checkEncoderDone() == true) {
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "park";
+//                }
+//                break;
+//
+//            case "lift to top hub":
+//                robot.lift.setPower(1);
+//                if (runtime.seconds() > 0.6){
+//                    robot.lift.setPower(0);
+//                    runtime.reset();
+//                    task = "forward";
+//                }
+//                break;
+//
+//            case "forward":
+//                encoderDrive(DRIVE_SPEED, 5, 5);
+//                if (checkEncoderDone() == true){
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "strafe to wall";
+//                }
+//                break;
+//
+//            case "strafe to wall":
+//                encoderStrafe(DRIVE_SPEED, -12, 12);
+//                if (checkEncoderDone() == true){
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "back into square";
+//                }
+//                break;
+//
+//            case "back into square":
+//                encoderDrive(DRIVE_SPEED, -3.5, -3.5);
+//                if (checkEncoderDone() == true) {
+//                    encoderComplete();
+//                    runtime.reset();
+//                    task = "stop";
+//                }
+//                break;
 
             case "stop":
                 if (tfod != null) {
