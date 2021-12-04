@@ -70,7 +70,7 @@ public class Teleop extends OpMode{
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
-        robot.dump.setPosition(0.7);
+        robot.dump.setPosition(0.8);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Initialized");
@@ -184,9 +184,9 @@ public class Teleop extends OpMode{
 
         // close
         if (gamepad2.right_bumper){
-            robot.claw.setPosition(150);
+            robot.claw.setPosition(robot.CLOSE_SERVO);
         } else if (gamepad2.left_bumper) {
-            robot.claw.setPosition(-10);
+            robot.claw.setPosition(robot.OPEN_SERVO);
         }
 
         // Send telemetry message to signify robot running;
