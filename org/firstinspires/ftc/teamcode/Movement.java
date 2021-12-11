@@ -103,9 +103,61 @@ public class Movement {
         robot.bright.setPower(Math.abs(speed));
         robot.bleft.setPower(Math.abs(speed));
     }
+    //This is for diagonal strafing lolololololololollolol
+    public void encoderAngleStrafe(double speed,
+                              double frightBleftInches, double fleftBrightInches, boolean right, boolean up) {
+        int newFleftTarget;
+        int newFrightTarget;
+        int newBleftTarget;
+        int newBrightTarget;
+
+        // Determine new target position, and pass to motor controller
+        newFleftTarget = robot.fleft.getCurrentPosition() + (int)(fleftBrightInches * COUNTS_PER_INCH);
+        newFrightTarget = robot.fright.getCurrentPosition() + (int)(frightBleftInches * COUNTS_PER_INCH);
+        newBleftTarget = robot.bleft.getCurrentPosition() + (int)(frightBleftInches * COUNTS_PER_INCH);
+        newBrightTarget = robot.bright.getCurrentPosition() + (int)(fleftBrightInches * COUNTS_PER_INCH);
+
+        robot.fright.setTargetPosition(newFrightTarget);
+        robot.fleft.setTargetPosition(newFleftTarget);
+        robot.bright.setTargetPosition(newBrightTarget);
+        robot.bleft.setTargetPosition(newBleftTarget);
+
+        // Turn On RUN_TO_POSITION
+        robot.fright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.fleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.bright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.bleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        if (up && right){
+            robot.fright.setPower(0);
+            robot.fleft.setPower(Math.abs(speed));
+            robot.bright.setPower(Math.abs(speed));
+            robot.bleft.setPower(0);
+        }
+        else if (!up && right){
+            robot.fright.setPower(-(Math.abs(speed)));
+            robot.fleft.setPower(0);
+            robot.bright.setPower(0);
+            robot.bleft.setPower(-(Math.abs(speed)));
+        }
+        else if (!up && !right){
+            robot.fright.setPower(0);
+            robot.fleft.setPower(-(Math.abs(speed)));
+            robot.bright.setPower(-(Math.abs(speed)));
+            robot.bleft.setPower(0);
+        }
+        else if (up && !right){
+            robot.fright.setPower((Math.abs(speed)));
+            robot.fleft.setPower(0);
+            robot.bright.setPower(0);
+            robot.bleft.setPower((Math.abs(speed)));
+        }
+        // reset the timeout time and start motion.
+
+    }
 
     public boolean checkEncoderDone() {
-        return !(robot.fright.isBusy() || robot.fleft.isBusy() || robot.bright.isBusy() || robot.bleft.isBusy());
+        return !(robot.fright.isBusy() && robot.fleft.isBusy() && robot.bright.isBusy() && robot.bleft.isBusy());
     }
 
     public void encoderComplete(){
