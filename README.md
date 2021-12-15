@@ -71,3 +71,10 @@ Dec 1, 2021   - Camera and competition summary
               - Trying to incorporate Vuforia and TFOD, haven't tested yet, needs a lot of work
               
               - Added a claw for the capstone (Teleop)
+
+Dec 15, 2021  - Camera Testing
+
+              - Tested the camera for the first time and it works, it detects objects and labels them
+              
+              - To find the values, we took multiple states of data and put it in an excel file to see the limits and the positions of the duck/capstone
+           
