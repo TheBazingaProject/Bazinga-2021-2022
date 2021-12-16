@@ -78,3 +78,4 @@ Dec 15, 2021  - Camera Testing
               
               - To find the values, we took multiple states of data and put it in an excel file to see the limits and the positions of the duck/capstone
            
+              - Will try to test more and implement it into the actual autonomous'
