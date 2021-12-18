@@ -86,7 +86,8 @@ public class AutoAudienceBlueMovement extends OpMode {
 
         robot.init(hardwareMap);
         movement.init(robot);
-        robot.dump.setPosition(0.7);
+        robot.dump.setPosition(0.8);
+        robot.claw.setPosition(0.7);
 
 //        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 //
@@ -166,11 +167,11 @@ public class AutoAudienceBlueMovement extends OpMode {
                 if (movement.checkEncoderDone()) {
                     movement.encoderComplete();
                     movement.encoderStrafe(movement.TURN_SPEED, 45, -45);
-                    task = "prime encoder1";
+                    task = "reset encoder1";
                 }
                 break;
 
-                case "prime encoder1":
+                case "reset encoder1":
                 if (movement.checkEncoderDone()) {
                     movement.encoderComplete();
                     runtime.reset();
@@ -180,10 +181,10 @@ public class AutoAudienceBlueMovement extends OpMode {
 
                 case "nudge forward":
                     movement.encoderDrive(movement.DRIVE_SPEED, -6, -6);
-                    task = "prime encoder2";
+                    task = "reset encoder2";
                 break;
 
-            case "prime encoder2":
+            case "reset encoder2":
                 if (movement.checkEncoderDone()) {
                     movement.encoderComplete();
                     runtime.reset();
