@@ -1,21 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 // TFOD things
-import org.firstinspires.ftc.teamcode.TFOD;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 
 // angle things
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -120,9 +116,9 @@ public class AutoRedAudienceWebcam extends OpMode {
 //        parameters.loggingEnabled = false;
 //
 //        robot.imu.initialize(parameters);
-        robot.dump.setPosition(0.7);
+        robot.dump.setPosition(0.8);
         // camera should see the last two dots
-        robot.camera.setPosition(0.5);
+        // robot.camera.setPosition(0.5);
 
         initVuforia();
         initTfod();
@@ -272,7 +268,7 @@ public class AutoRedAudienceWebcam extends OpMode {
             case "back up to 3-layer thingy":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(DRIVE_SPEED, 43.5, 43.5);
+                    encoderDrive(DRIVE_SPEED, 42, 42 );
                     task = "turn to face thingy";
                 }
                 break;
@@ -292,8 +288,8 @@ public class AutoRedAudienceWebcam extends OpMode {
                         encoderDrive(0.25, -12, -12);
                         lifting(LIFT_SPEED, 5);
                     } else if (BarcodePosition == 2) {
-                        lifting(LIFT_SPEED, 9);
-                        encoderDrive(0.3, -13, -13);
+                        lifting(LIFT_SPEED, 6.5);
+                        encoderDrive(0.3, -13.4, -13.4);
                     } else if (BarcodePosition == 3) {
                         encoderDrive(0.3,-15, -15);
                         lifting(LIFT_SPEED, 16);
@@ -325,7 +321,7 @@ public class AutoRedAudienceWebcam extends OpMode {
                 } else if (BarcodePosition == 2) {
                     robot.dump.setPosition(0.25);
                 } else {
-                    robot.dump.setPosition(0.15);
+                    robot.dump.setPosition(0.2);
                 }
                 if (runtime.seconds() > 4) {
                     robot.dump.setPosition(0.7);
@@ -357,7 +353,11 @@ public class AutoRedAudienceWebcam extends OpMode {
                 if (checkEncoderDone()) {
                     encoderComplete();
                     if (BarcodePosition == 1) {
-                        encoderStrafe(DRIVE_SPEED, 5, -5);
+                        encoderStrafe(DRIVE_SPEED, 14, -14);
+                    } else if (BarcodePosition == 2) {
+                        encoderStrafe(DRIVE_SPEED, 13, -13);
+                    } else if (BarcodePosition == 3) {
+                        encoderStrafe(DRIVE_SPEED, 12, -12);
                     }
                     task = "stop";
                 }
@@ -489,10 +489,12 @@ public class AutoRedAudienceWebcam extends OpMode {
 
 
     private void resetEncoder() {
+
         position = robot.fleft.getCurrentPosition();
     }
 
     private double getPosition() {
+
         return robot.fleft.getCurrentPosition() - position;
     }
 
