@@ -107,6 +107,7 @@ public class WebcamTFOD extends LinearOpMode {
         initVuforia();
         initTfod();
 
+
         /**
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
@@ -120,14 +121,14 @@ public class WebcamTFOD extends LinearOpMode {
             // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
             // should be set to the value of the images used to create the TensorFlow Object Detection model
             // (typically 16/9).
-            tfod.setZoom(2.5, 16.0/9.0);
+            //   tfod.setZoom(5, 16.0/9.0);
         }
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
         waitForStart();
-        String BarcodePosition = "A";
+        int BarcodePosition = 1;
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
@@ -137,9 +138,9 @@ public class WebcamTFOD extends LinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
                       telemetry.addData("# Object Detected", updatedRecognitions.size());
-                      if (updatedRecognitions.size() == 0){
-                          BarcodePosition = "A";
-                          telemetry.addData("Target Zone", "A");
+                      if (updatedRecognitions.size() == 0) {
+                          BarcodePosition = 1;
+                          telemetry.addData("Barcode Position", BarcodePosition);
                       }
                       // step through the list of recognitions and display boundary info.
                       int i = 0;
@@ -153,26 +154,30 @@ public class WebcamTFOD extends LinearOpMode {
                         i++;
 
                         // check label to see if the camera sees a Duck
-                        if (recognition.getLabel().equals("Ball")) {
+                        if (recognition.getLabel().equals("Ball") || recognition.getLabel().equals("Marker")) {
                             isDuckDetected = true;
                             telemetry.addData("Object Detected", "Capstone");
-                            if (recognition.getLeft() > 355) {
-                                BarcodePosition = "C";
-                            } else if (recognition.getLeft() > 61 && recognition.getLeft() < 350 && recognition.getRight() > 135 && recognition.getRight() < 300) {
-                                BarcodePosition = "B";
+                            if (recognition.getLeft() > 355 && recognition.getRight() > 400) {
+                                BarcodePosition = 3;
+                            } else if (recognition.getLeft() > 0 && recognition.getLeft() < 350 && recognition.getRight() > 180 && recognition.getRight() < 400) {
+                                BarcodePosition = 2;
                             }
                             telemetry.addData("Barcode Position", BarcodePosition);
                         } else if (recognition.getLabel().equals("Duck")) {
                             isDuckDetected = true;
                             telemetry.addData("Object Detected", "Duck");
-                            if (recognition.getLeft() > 355) {
-                                BarcodePosition = "C";
-                            } else if (recognition.getLeft() > 61 && recognition.getLeft() < 350 && recognition.getRight() > 135 && recognition.getRight() < 300) {
-                                BarcodePosition = "B";
+                            if (recognition.getLeft() > 355 && recognition.getRight() > 400) {
+                                BarcodePosition = 3;
+                            } else if (recognition.getLeft() > 0 && recognition.getLeft() < 350 && recognition.getRight() > 180 && recognition.getRight() < 400) {
+                                BarcodePosition = 2;
                             }
+                            telemetry.addData("Barcode Position", BarcodePosition);
+                        } else if (updatedRecognitions.size() == 0) {
+                            BarcodePosition = 1;
                             telemetry.addData("Barcode Position", BarcodePosition);
                         } else {
                             isDuckDetected = false;
+                            telemetry.addData("Barcode Position", 1);
                         }
                       }
                       telemetry.update();
@@ -208,7 +213,7 @@ public class WebcamTFOD extends LinearOpMode {
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
        tfodParameters.useObjectTracker = true;
-       tfodParameters.minResultConfidence = 0.8f;
+       tfodParameters.minResultConfidence = 0.85f;
        tfodParameters.isModelTensorFlow2 = true;
        tfodParameters.inputSize = 320;
        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
