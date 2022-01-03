@@ -1,0 +1,50 @@
+Note: Not in a specific order to complete
+Note to Ryan: Let me test like crazy
+
+AutoAudienceBlueMovement:
+    - Adjust the distance to the carousel
+    - Incorporate the webcam
+    - Test at least 100 times
+
+AutoAudienceRedEncoders:
+    - All good
+    - Used as a backup in case the Webcam one doesn't want to work during a match
+
+AutoBlueFarWebcam:
+    - Test and adjust from there
+    - Copy and Paste from AutoRedAudienceWebcam
+
+AutoFarBlueEncoders:
+    - Used as a backup in case the Webcam one doesn't want to work during a match
+    - If there is extra time, make the robot put block into the shipping hub
+
+AutoFarRedEncoders:
+    - Used as a backup in case the Webcam one doesn't want to work during a match
+    - If there is extra time, make the robot put block into the shipping hub
+
+AutoRedAudienceWebcam:
+    - Finish tuning
+    - Test for errors
+
+AutoRedFarWebcam:
+    - Test and adjust from there
+    - Copy and Paste from AutoRedAudienceWebcam
+
+BlueEncodersAudienceAuto:
+    - Used as a backup in case the Webcam one doesn't want to work during a match
+    - Test the program just in case
+
+Hardwaremap:
+    - All good (unless needed to add or adjust)
+
+Movement:
+    - All good
+
+Teleop:
+    - All good
+    - If there is extra time, add two wheel drive to hep get over the barrier if stuck
+
+WebcamTFOD:
+    - Don't touch
+    - Delete "Marker" Label
+
