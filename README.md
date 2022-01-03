@@ -88,7 +88,7 @@ Dec 17, 2021  - Camera in Autonomous
               
 Jan 2, 2022   - Happy New Year :D (Winter Break)
 
-              - Took out the "Marker" Label for the Webcam in AuroRedAudienceWebcam
+              - Took out the "Marker" Label for the Webcam in AutoRedAudienceWebcam
               
               - Commented out the original function to move the lift in teleop: Initially, holding a button would make the lift rise until the button is released. Now, pushing the dpad each time incrementally raises the lift on the robot and the dpad's right and left buttons make the lift go all the way up or all the way down, respectively
               
