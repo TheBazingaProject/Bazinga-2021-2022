@@ -84,4 +84,14 @@ Dec 17, 2021  - Camera in Autonomous
      
               - Implemented the webcam program into the red autonomous on the carousel side
               
-                   - Tested the program and had a couple issues but fixed it by reseting the encoder positions to 0
+              - Tested the program and had a couple issues but fixed it by reseting the encoder positions to 0
+              
+Jan 2, 2022   - Happy New Year :D (Winter Break)
+
+              - Took out the "Marker" Label for the Webcam in AuroRedAudienceWebcam
+              
+              - Commented out the original function to move the lift in teleop: Initially, holding a button would make the lift rise until the button is released. Now, pushing the dpad each time incrementally raises the lift on the robot and the dpad's right and left buttons make the lift go all the way up or all the way down, respectively
+              
+              - Added a To-Do list file so other programmers on the team have something to work on
+              
+              - Added all of the files into a new branch on Github, which is java/org/firstinspires/ftc/teamcode
