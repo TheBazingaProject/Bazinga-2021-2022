@@ -101,3 +101,5 @@ Jan 12, 2022  - Fixed AutoRedFarWebcam
               - Added code to AutoRedFarWebcam and now just have to test it
               
               - Added back the joystick control for the lift in Teleop
+
+              - We now have 5 inch wheels on the robot
