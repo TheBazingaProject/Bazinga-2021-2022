@@ -191,13 +191,13 @@ public class Teleop extends OpMode{
             }
         }
 
-//        if (gamepad2.right_stick_y > 0) {
-//            robot.lift.setPower(1);
-//        } else if (gamepad2.right_stick_y < 0) {
-//            robot.lift.setPower(-1);
-//        } else {
-//            robot.lift.setPower(0);
-//        }
+        if (gamepad2.right_stick_y > 0) {
+            robot.lift.setPower(1);
+        } else if (gamepad2.right_stick_y < 0) {
+            robot.lift.setPower(-1);
+        } else {
+            robot.lift.setPower(0);
+        }
 
         if (gamepad2.dpad_up && liftPos == 0) {
             robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
