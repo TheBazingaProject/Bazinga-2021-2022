@@ -1,24 +1,24 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.teamcode.Hardwaremap;
 
+// TFOD things
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import java.util.List;
+
+// angle things
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.Hardwaremap;
-
-import java.util.List;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -53,8 +53,7 @@ public class AutoRedFarWebcam extends OpMode {
     private static final String[] LABELS = {
             "Ball",
             "Cube",
-            "Duck",
-            "Marker"
+            "Duck"
     };
     public int BarcodePosition = 1;
     private WebcamName webcamName       = null;
@@ -117,7 +116,9 @@ public class AutoRedFarWebcam extends OpMode {
 //        parameters.loggingEnabled = false;
 //
 //        robot.imu.initialize(parameters);
-        robot.dump.setPosition(0.7);
+        robot.dump.setPosition(0.8);
+        // camera should see the last two dots
+        // robot.camera.setPosition(0.5);
 
         initVuforia();
         initTfod();
@@ -128,10 +129,10 @@ public class AutoRedFarWebcam extends OpMode {
             //tfod.setZoom(2.5, 16.0/9.0);
         }
 
-        while (!robot.imu.isGyroCalibrated()) {
-        }
-        telemetry.addData("Imu Calibration Status:", robot.imu.getCalibrationStatus());
-        telemetry.update();
+//        while (!robot.imu.isGyroCalibrated()) {
+//        }
+//        telemetry.addData("Imu Calibration Status:", robot.imu.getCalibrationStatus());
+//        telemetry.update();
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized :)");
@@ -144,11 +145,11 @@ public class AutoRedFarWebcam extends OpMode {
     public void init_loop() {
 
         // make sure the imu gyro is calibrated before continuing.
-
-        /**
-         * Activate TensorFlow Object Detection before we wait for the start command.
-         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
-         **/
+//        if (first) {
+//
+//
+//            first = false;
+//        }
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
@@ -171,7 +172,7 @@ public class AutoRedFarWebcam extends OpMode {
                     i++;
 
                     // check label to see if the camera sees a Duck
-                    if (recognition.getLabel().equals("Ball") || recognition.getLabel().equals("Marker")) {
+                    if (recognition.getLabel().equals("Ball")) {
                         isDuckDetected = true;
                         telemetry.addData("Object Detected", "Capstone");
                         if (recognition.getLeft() > 355 && recognition.getRight() > 400) {
@@ -200,7 +201,6 @@ public class AutoRedFarWebcam extends OpMode {
                 telemetry.update();
             }
         }
-
         double cutOff = 0;
 //        for (Recognition r : tfod.getRecognitions()) {
 //            telemetry.addData("height", Math.abs(r.getBottom() - r.getTop()) + 5);
@@ -226,23 +226,24 @@ public class AutoRedFarWebcam extends OpMode {
                 runtime.reset();
                 //turn camera to face barcode (before match?)
                 //scan barcode using camera, save value as a variable so we can recall it later
+
                 task = "strafe out of wall";
                 break;
 
             case "strafe out of wall":
-                encoderStrafe(DRIVE_SPEED, 27, -27);
-                task = "forward to hub";
+                encoderStrafe(TURN_SPEED, -7, 7);
+                task = "move to shipping hub";
                 break;
 
-            case "forward to hub":
+            case "move to shipping hub":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(DRIVE_SPEED, -7, -7);
-                    task = "turn to hub";
+                    encoderDrive(0.15, -17.5, -17.5);
+                    task = "turn to face thingy";
                 }
                 break;
 
-            case "turn to hub":
+            case "turn to face thingy":
                 if (checkEncoderDone()) {
                     encoderComplete();
                     encoderDrive(TURN_SPEED, -22, 22);
@@ -254,11 +255,11 @@ public class AutoRedFarWebcam extends OpMode {
                 if (checkEncoderDone()) {
                     encoderComplete();
                     if (BarcodePosition == 1) {
-                        encoderDrive(0.25, -12, -12);
+                        encoderDrive(0.25, -12.4, -12.4);
                         lifting(LIFT_SPEED, 5);
                     } else if (BarcodePosition == 2) {
-                        lifting(LIFT_SPEED, 9);
-                        encoderDrive(0.3, -13, -13);
+                        encoderDrive(0.3, -13.2, -13.2);
+                        lifting(LIFT_SPEED, 7);
                     } else if (BarcodePosition == 3) {
                         encoderDrive(0.3,-15, -15);
                         lifting(LIFT_SPEED, 16);
@@ -267,6 +268,14 @@ public class AutoRedFarWebcam extends OpMode {
                     task = "dumpy";
                 }
                 break;
+
+//            case "lift up to drop":
+//                if (checkEncoderDone()) {
+//                    encoderComplete();
+//                    lifting(LIFT_SPEED, 6.5);
+//                    task = "dumpy";
+//                }
+//                break;
 
             case "dumpy":
                 if (checkEncoderDone()) {
@@ -282,7 +291,7 @@ public class AutoRedFarWebcam extends OpMode {
                 } else if (BarcodePosition == 2) {
                     robot.dump.setPosition(0.25);
                 } else {
-                    robot.dump.setPosition(0.15);
+                    robot.dump.setPosition(0.2);
                 }
                 if (runtime.seconds() > 4) {
                     robot.dump.setPosition(0.7);
@@ -436,10 +445,12 @@ public class AutoRedFarWebcam extends OpMode {
 
 
     private void resetEncoder() {
+
         position = robot.fleft.getCurrentPosition();
     }
 
     private double getPosition() {
+
         return robot.fleft.getCurrentPosition() - position;
     }
 
