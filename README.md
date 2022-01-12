@@ -95,3 +95,9 @@ Jan 2, 2022   - Happy New Year :D (Winter Break)
               - Added a To-Do list file so other programmers on the team have something to work on
               
               - Added all of the files into a new branch on Github, which is java/org/firstinspires/ftc/teamcode
+
+Jan 12, 2022  - Fixed AutoRedFarWebcam
+            
+              - Added code to AutoRedFarWebcam and now just have to test it
+              
+              - Added back the joystick control for the lift in Teleop
