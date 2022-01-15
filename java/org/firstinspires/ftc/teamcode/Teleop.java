@@ -199,57 +199,81 @@ public class Teleop extends OpMode{
             robot.lift.setPower(0);
         }
 
-        if (gamepad2.dpad_up && liftPos == 0) {
-            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            lifting(LIFT_SPEED, 5);
-            robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftPos = 1;
-            liftInch = 5;
-        } else if (gamepad2.dpad_up && liftPos == 1) {
-            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            lifting(LIFT_SPEED, 2);
-            robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftPos = 2;
-            liftInch = 7;
-        } else if (gamepad2.dpad_up && liftPos == 2) {
-            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            lifting(LIFT_SPEED, 9);
-            robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftPos = 3;
-            liftInch = 16;
-        }
-
-        if (gamepad2.dpad_down && liftPos == 3) {
-            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            lifting(LIFT_SPEED, -9);
-            robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftPos = 2;
-            liftInch = 7;
-        } else if (gamepad2.dpad_down && liftPos == 2) {
-            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            lifting(LIFT_SPEED, -2);
-            robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftPos = 1;
-            liftInch = 5;
-        } else if (gamepad2.dpad_down && liftPos == 1) {
-            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            lifting(LIFT_SPEED, -5);
-            robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftPos = 0;
-            liftInch = 0;
-        }
-
-        if (gamepad2.dpad_right) {
-            liftMax = 16 - liftInch;
-            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            lifting(LIFT_SPEED, liftMax);
-            robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        } else if (gamepad2.dpad_left) {
-            liftMax = liftInch - 16;
-            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            lifting(LIFT_SPEED, liftMax);
-            robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
+//        if (gamepad2.dpad_up && liftPos == 0) {
+//            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            lifting(LIFT_SPEED, 5);
+//            if (checkEncoderDone()) {
+//                encoderComplete();
+//                robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                liftPos = 1;
+//                liftInch = 5;
+//            }
+//        } else if (gamepad2.dpad_up && liftPos == 1) {
+//            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            lifting(LIFT_SPEED, 2);
+//            if (checkEncoderDone()) {
+//                encoderComplete();
+//                robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                liftPos = 2;
+//                liftInch = 7;
+//            }
+//        } else if (gamepad2.dpad_up && liftPos == 2) {
+//            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            lifting(LIFT_SPEED, 9);
+//            if (checkEncoderDone()) {
+//                encoderComplete();
+//                robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                liftPos = 3;
+//                liftInch = 16;
+//            }
+//        }
+//
+//        if (gamepad2.dpad_down && liftPos == 3) {
+//            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            lifting(LIFT_SPEED, -9);
+//            if (checkEncoderDone()) {
+//                encoderComplete();
+//                robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                liftPos = 2;
+//                liftInch = 7;
+//            }
+//        } else if (gamepad2.dpad_down && liftPos == 2) {
+//            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            lifting(LIFT_SPEED, -2);
+//            if (checkEncoderDone()) {
+//                encoderComplete();
+//                robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                liftPos = 1;
+//                liftInch = 5;
+//            }
+//        } else if (gamepad2.dpad_down && liftPos == 1) {
+//            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            lifting(LIFT_SPEED, -5);
+//            if (checkEncoderDone()) {
+//                encoderComplete();
+//                robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                liftPos = 0;
+//                liftInch = 0;
+//            }
+//        }
+//
+//        if (gamepad2.dpad_right) {
+//            liftMax = 16 - liftInch;
+//            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            lifting(LIFT_SPEED, liftMax);
+//            if (checkEncoderDone()) {
+//                encoderComplete();
+//                robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            }
+//        } else if (gamepad2.dpad_left) {
+//            liftMax = liftInch - 16;
+//            robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            lifting(LIFT_SPEED, liftMax);
+//            if (checkEncoderDone()) {
+//                encoderComplete();
+//                robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            }
+//        }
 
         // close
         if (gamepad2.right_bumper){
@@ -268,6 +292,7 @@ public class Teleop extends OpMode{
         telemetry.addData("reverse?", reverse);
         telemetry.addData("lift position", liftPos);
         telemetry.addData("lift height", liftInch);
+        telemetry.addData("power", "Running at %3f :%3f :%3f :%3f", robot.fleft.getPower(), robot.fright.getPower(), robot.bright.getPower(), robot.bleft.getPower());
         telemetry.update();
     }
 
@@ -286,5 +311,16 @@ public class Teleop extends OpMode{
 
         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.lift.setPower(Math.abs(speed));
+    }
+    public boolean checkEncoderDone() {
+        return !(robot.lift.isBusy());
+    }
+
+    public void encoderComplete(){
+        robot.lift.setPower(0);
+        robot.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // Turn off RUN_TO_POSITION
+        robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }
