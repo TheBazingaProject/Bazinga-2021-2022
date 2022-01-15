@@ -54,7 +54,7 @@ public class AutoFarBlueEncoders extends OpMode {
     static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;
     static final double     MAX_REV                 = 300 ;
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     WHEEL_DIAMETER_INCHES   = 5.0 ;     // For figuring circumference
     static final double     LIFT_WHEEL_DIAMETER_IN  = 1.0 ;
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
@@ -111,13 +111,13 @@ public class AutoFarBlueEncoders extends OpMode {
         robot.imu.initialize(parameters);
         robot.dump.setPosition(0.7);
 
-        while (!robot.imu.isGyroCalibrated()) {
-        }
-        telemetry.addData("Imu Calibration Status:", robot.imu.getCalibrationStatus());
-        telemetry.update();
-
-        // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized :)");
+//        while (!robot.imu.isGyroCalibrated()) {
+//        }
+//        telemetry.addData("Imu Calibration Status:", robot.imu.getCalibrationStatus());
+//        telemetry.update();
+//
+//        // Tell the driver that initialization is complete.
+//        telemetry.addData("Status", "Initialized :)");
     }
 
     /*
@@ -168,7 +168,7 @@ public class AutoFarBlueEncoders extends OpMode {
                 runtime.reset();
                 //turn camera to face barcode (before match?)
                 //scan barcode using camera, save value as a variable so we can recall it later
-                task = "strafe out of wall";
+                task = "straight";
                 break;
 
             case "strafe out of wall":
@@ -178,9 +178,15 @@ public class AutoFarBlueEncoders extends OpMode {
 
             case "forward to hub":
                 if (checkEncoderDone()) {
+                    encoderComplete();
                     encoderDrive(DRIVE_SPEED, -80, -80);
                     task = "stop";
                 }
+                break;
+
+            case "straight":
+                encoderDrive(.5, -30, -30);
+                task = "stop";
                 break;
 
 //            case "turn a little":
@@ -301,8 +307,11 @@ public class AutoFarBlueEncoders extends OpMode {
                 if (tfod != null) {
                     tfod.shutdown();
                 }
-                runtime.reset();
-                stop();
+                if (checkEncoderDone()) {
+                    encoderComplete();
+                    runtime.reset();
+                    stop();
+                }
                 break;
         }
 
@@ -397,7 +406,7 @@ public class AutoFarBlueEncoders extends OpMode {
     }
 
     public boolean checkEncoderDone() {
-        return !(robot.fright.isBusy() || robot.fleft.isBusy() || robot.bright.isBusy() || robot.bleft.isBusy() || robot.lift.isBusy());
+        return !(robot.fright.isBusy() && robot.fleft.isBusy() && robot.bright.isBusy() && robot.bleft.isBusy() || robot.lift.isBusy());
     }
 
     public void encoderComplete(){
