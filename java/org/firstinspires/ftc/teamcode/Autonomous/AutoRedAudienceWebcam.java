@@ -61,7 +61,7 @@ public class AutoRedAudienceWebcam extends OpMode {
     static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;
     static final double     MAX_REV                 = 300 ;
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     WHEEL_DIAMETER_INCHES   = 5.0 ;     // For figuring circumference
     static final double     LIFT_WHEEL_DIAMETER_IN  = 1.0 ;
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
@@ -69,6 +69,7 @@ public class AutoRedAudienceWebcam extends OpMode {
     static final double     DRIVE_SPEED             = 1;
     static final double     TURN_SPEED              = 0.8;
     static final double     LIFT_SPEED              = 0.8;
+    static final double     speedArray[]            = {-1, 1, -1, 1};
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -227,18 +228,18 @@ public class AutoRedAudienceWebcam extends OpMode {
                 //turn camera to face barcode (before match?)
                 //scan barcode using camera, save value as a variable so we can recall it later
 
-                task = "strafe out of wall";
+                task = "move to carousel";
                 break;
 
             case "strafe out of wall":
-                encoderStrafe(TURN_SPEED, -7, 7);
+                encoderTest(speedArray, -7, 7);
                 task = "move to carousel";
                 break;
 
             case "move to carousel":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(0.15, -17.5, -17.5);
+                    encoderDrive(0.5, -17.5, -17.5);
                     task = "spin duck off1";
                 }
                 break;
@@ -378,6 +379,7 @@ public class AutoRedAudienceWebcam extends OpMode {
         telemetry.addLine("fleft   fright   bright   bleft");
         telemetry.addData("Target",  "Running to %7d :%7d :%7d :%7d", robot.fleft.getTargetPosition(), robot.fright.getTargetPosition(), robot.bright.getTargetPosition(), robot.bleft.getTargetPosition());
         telemetry.addData("Current",  "Running at %7d :%7d :%7d :%7d", robot.fleft.getCurrentPosition(), robot.fright.getCurrentPosition(), robot.bright.getCurrentPosition(), robot.bleft.getCurrentPosition());
+        telemetry.addData("power", "Running at %3f :%3f :%3f :%3f", robot.fleft.getPower(), robot.fright.getPower(), robot.bright.getPower(), robot.bleft.getPower());
         telemetry.update();
     }
 
@@ -396,6 +398,37 @@ public class AutoRedAudienceWebcam extends OpMode {
 
         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.lift.setPower(Math.abs(speed));
+    }
+
+    public void encoderTest(double speed[], double rightInches, double leftInches) {
+        int frightTarget;
+        int fleftTarget;
+        int brightTarget;
+        int bleftTarget;
+
+
+        // Determine new target position, and pass to motor controller
+        fleftTarget = robot.fleft.getCurrentPosition() - (int)(leftInches * COUNTS_PER_INCH);
+        frightTarget = robot.fright.getCurrentPosition() - (int)(rightInches * COUNTS_PER_INCH);
+        bleftTarget = robot.bleft.getCurrentPosition() - (int)(leftInches * COUNTS_PER_INCH);
+        brightTarget = robot.bright.getCurrentPosition() - (int)(rightInches * COUNTS_PER_INCH);
+        robot.fright.setTargetPosition(frightTarget);
+        robot.fleft.setTargetPosition(fleftTarget);
+        robot.bright.setTargetPosition(brightTarget);
+        robot.bleft.setTargetPosition(bleftTarget);
+
+        // Turn On RUN_TO_POSITION
+        robot.fright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.fleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.bright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.bleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // reset the timeout time and start motion.
+        //runtime.reset();
+        robot.fright.setPower(Math.abs(speed[0]));
+        robot.fleft.setPower(Math.abs(speed[1]));
+        robot.bright.setPower(Math.abs(speed[2]));
+        robot.bleft.setPower(Math.abs(speed[3]));
     }
 
     public void encoderDrive(double speed, double rightInches, double leftInches) {
@@ -478,6 +511,8 @@ public class AutoRedAudienceWebcam extends OpMode {
         robot.bright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.bleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //wait(100);
 
         // Turn off RUN_TO_POSITION
         robot.fright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
