@@ -103,3 +103,11 @@ Jan 12, 2022  - Fixed AutoRedFarWebcam
               - Added back the joystick control for the lift in Teleop
 
               - We now have 5 inch wheels on the robot
+              
+Jan 15, 2022  - New Wheels = errors
+  
+              - With the new wheels, strafing and just moving in autonomous in general is messed up
+              
+              - Tried manually doing strafing, which worked
+              
+              - A lot of friction by wheels on the ground and the plate on the robot
