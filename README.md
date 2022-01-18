@@ -111,3 +111,9 @@ Jan 15, 2022  - New Wheels = errors
               - Tried manually doing strafing, which worked
               
               - A lot of friction by wheels on the ground and the plate on the robot
+
+Jan 18, 2022  - Test Wheels
+
+              - Created a new autonomous that tests the wheels to make sure that they work in all directions
+              
+              - the program makes the robot move forward, then backward, then strafes left and right
