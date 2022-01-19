@@ -187,7 +187,7 @@ public class WheelTest extends OpMode {
             case "strafe left":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderStrafe(0.5, -20, 20);
+                    encoderStrafe(0.5, -25, 20);
                     task = "strafe right";
                 }
                 break;
@@ -195,7 +195,23 @@ public class WheelTest extends OpMode {
             case "strafe right":
                 if (checkEncoderDone()){
                     encoderComplete();
-                    encoderStrafe(0.8, 20, -20);
+                    encoderStrafe(0.8, 25, -25);
+                    task = "turn left";
+                }
+                break;
+
+            case "turn left":
+                if (checkEncoderDone()) {
+                    encoderComplete();
+                    encoderDrive(TURN_SPEED, 24, -24);
+                    task = "turn right";
+                }
+                break;
+
+            case "turn right":
+                if (checkEncoderDone()) {
+                    encoderComplete();
+                    encoderDrive(0.3, -24, 24);
                     task = "stop";
                 }
                 break;
@@ -331,6 +347,7 @@ public class WheelTest extends OpMode {
         telemetry.addLine("fleft   fright   bright   bleft");
         telemetry.addData("Target",  "Running to %7d :%7d :%7d :%7d", robot.fleft.getTargetPosition(), robot.fright.getTargetPosition(), robot.bright.getTargetPosition(), robot.bleft.getTargetPosition());
         telemetry.addData("Current",  "Running at %7d :%7d :%7d :%7d", robot.fleft.getCurrentPosition(), robot.fright.getCurrentPosition(), robot.bright.getCurrentPosition(), robot.bleft.getCurrentPosition());
+        telemetry.addData("power", "Running at %3f :%3f :%3f :%3f", robot.fleft.getPower(), robot.fright.getPower(), robot.bright.getPower(), robot.bleft.getPower());
         telemetry.update();
     }
 
@@ -425,6 +442,12 @@ public class WheelTest extends OpMode {
         robot.bright.setPower(0);
         robot.bleft.setPower(0);
         robot.lift.setPower(0);
+
+        robot.fright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.fleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.bright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.bleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Turn off RUN_TO_POSITION
         robot.fright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
