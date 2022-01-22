@@ -116,8 +116,6 @@ public class Teleop extends OpMode{
         double lx = gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
 
-        robot.mid.setPower(ly);
-
         if (gamepad1.left_bumper && reverse == true) {
             reverse = false;
         } else if (gamepad1.right_bumper && reverse == false) {
@@ -125,16 +123,16 @@ public class Teleop extends OpMode{
         }
 
         if (reverse == true) {
-            robot.fleft.setPower(ly - lx - rx);
-            robot.bleft.setPower(ly + lx - rx);
-            robot.fright.setPower(ly + lx + rx);
-            robot.bright.setPower(ly - lx + rx);
+            robot.fleft.setPower(-ly - lx - rx);
+            robot.bleft.setPower(-ly + lx - rx);
+            robot.fright.setPower(-ly + lx + rx);
+            robot.bright.setPower(-ly - lx + rx);
         }
         if (reverse == false) {
-            robot.fleft.setPower(-ly + lx + rx);
-            robot.bleft.setPower(-ly - lx + rx);
-            robot.fright.setPower(-ly - lx - rx);
-            robot.bright.setPower(-ly + lx - rx);
+            robot.fleft.setPower(ly + lx + rx);
+            robot.bleft.setPower(ly - lx + rx);
+            robot.fright.setPower(ly - lx - rx);
+            robot.bright.setPower(ly + lx - rx);
         }
 
         // Use gamepad left & right Bumpers to open and close the claw
@@ -151,17 +149,17 @@ public class Teleop extends OpMode{
         // Use gamepad buttons to move the arm up (Y) and down (A)
         // gamepad 1 - driving and intake + spinner
         if (gamepad1.x) {
-            robot.spinner.setPower(1);
+            robot.spinner.setPower(0.9);
         } else if (gamepad1.y) {
-            robot.spinner.setPower(-1);
+            robot.spinner.setPower(-0.9);
         } else {
             robot.spinner.setPower(0);
         }
 
         if (-gamepad1.right_stick_y > 0) {
-            robot.intake.setPower(-1);
+            robot.intake.setPower(-0.9);
         } else if (-gamepad2.right_stick_y < 0) {
-            robot.intake.setPower(0);
+            robot.intake.setPower(0.9);
         } else {
             robot.intake.setPower(0);
         }
@@ -170,7 +168,7 @@ public class Teleop extends OpMode{
         if (gamepad2.x) {
             robot.dump.setPosition(0.17);
         } else {
-            robot.dump.setPosition(0.8);
+            robot.dump.setPosition(0.7);
         }
 
         while (gamepad2.y) {
