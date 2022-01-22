@@ -53,14 +53,14 @@ public class AutoAudienceRedEncoders extends OpMode {
     static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;
     static final double     MAX_REV                 = 300 ;
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     WHEEL_DIAMETER_INCHES   = 5.0 ;     // For figuring circumference
     static final double     LIFT_WHEEL_DIAMETER_IN  = 1.0 ;
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     LIFT_COUNTS_PER_INCH    = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (LIFT_WHEEL_DIAMETER_IN * 3.1415);
     static final double     DRIVE_SPEED             = 1;
     static final double     TURN_SPEED              = 0.8;
-    static final double     LIFT_SPEED              = 0.8;
+    static final double     LIFT_SPEED              = 0.6;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -113,13 +113,13 @@ public class AutoAudienceRedEncoders extends OpMode {
         initVuforia();
 
 
-        while (!robot.imu.isGyroCalibrated()) {
-        }
-        telemetry.addData("Imu Calibration Status:", robot.imu.getCalibrationStatus());
-        telemetry.update();
-
-        // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized :)");
+//        while (!robot.imu.isGyroCalibrated()) {
+//        }
+//        telemetry.addData("Imu Calibration Status:", robot.imu.getCalibrationStatus());
+//        telemetry.update();
+//
+//        // Tell the driver that initialization is complete.
+//        telemetry.addData("Status", "Initialized :)");
     }
 
     /*
@@ -171,14 +171,14 @@ public class AutoAudienceRedEncoders extends OpMode {
                 break;
 
             case "strafe out of wall":
-                encoderStrafe(TURN_SPEED, -7, 7);
+                encoderStrafe(TURN_SPEED, 7, -7);
                 task = "move to carousel";
                 break;
 
             case "move to carousel":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(0.15, -18, -18);
+                    encoderDrive(0.15, 18, 18);
                     task = "spin duck off1";
                 }
                 break;
@@ -192,7 +192,7 @@ public class AutoAudienceRedEncoders extends OpMode {
                 break;
 
             case "spin duck off2":
-                robot.spinner.setPower(-0.7);
+                robot.spinner.setPower(0.7);
                 if (runtime.seconds() > 4.5) {
                     robot.spinner.setPower(0);
                     runtime.reset();
@@ -201,14 +201,14 @@ public class AutoAudienceRedEncoders extends OpMode {
                 break;
 
             case "strafe out more":
-                encoderStrafe(TURN_SPEED, -3, 3);
+                encoderStrafe(TURN_SPEED, 3, -3);
                 task = "back up to 3-layer thingy";
                 break;
 
             case "back up to 3-layer thingy":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(DRIVE_SPEED, 43.5, 43.5);
+                    encoderDrive(DRIVE_SPEED, -43.5, -43.5);
                     task = "turn to face thingy";
                 }
                 break;
@@ -224,8 +224,8 @@ public class AutoAudienceRedEncoders extends OpMode {
             case "forward to thingy":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(0.3, -15.5, -15.5);
-                    lifting(LIFT_SPEED, 18);
+                    encoderDrive(0.3, 15.5, 15.5);
+                    lifting(LIFT_SPEED, 10);
                     runtime.reset();
                     task = "dumpy";
                 }
@@ -257,12 +257,12 @@ public class AutoAudienceRedEncoders extends OpMode {
                 break;
 
             case "back up a little":
-                encoderDrive(DRIVE_SPEED, 5, 5);
+                encoderDrive(DRIVE_SPEED, -5, -5);
                 task = "turn to park";
 
             case "turn to park":
                 if (checkEncoderDone()) {
-                    encoderDrive(TURN_SPEED, -24, 24);
+                    encoderDrive(TURN_SPEED, 24, -24);
                     task = "SPEEDY TO PARK";
                 }
                 break;
@@ -270,7 +270,7 @@ public class AutoAudienceRedEncoders extends OpMode {
             case "SPEEDY TO PARK":
                 if (checkEncoderDone()) {
                     encoderComplete();
-                    encoderDrive(DRIVE_SPEED, 48, 48);
+                    encoderDrive(DRIVE_SPEED, -48, -48);
                     task = "stop";
                 }
                 break;
@@ -463,8 +463,8 @@ public class AutoAudienceRedEncoders extends OpMode {
         int newBrightTarget;
 
         // Determine new target position, and pass to motor controller
-        newFleftTarget = robot.fleft.getCurrentPosition() + (int)(fleftBrightInches * COUNTS_PER_INCH);
-        newFrightTarget = robot.fright.getCurrentPosition() + (int)(frightBleftInches * COUNTS_PER_INCH);
+        newFleftTarget = robot.fleft.getCurrentPosition() - (int)(fleftBrightInches * COUNTS_PER_INCH);
+        newFrightTarget = robot.fright.getCurrentPosition() - (int)(frightBleftInches * COUNTS_PER_INCH);
         newBleftTarget = robot.bleft.getCurrentPosition() + (int)(frightBleftInches * COUNTS_PER_INCH);
         newBrightTarget = robot.bright.getCurrentPosition() + (int)(fleftBrightInches * COUNTS_PER_INCH);
 
@@ -488,7 +488,7 @@ public class AutoAudienceRedEncoders extends OpMode {
     }
 
     public boolean checkEncoderDone() {
-        return !(robot.fright.isBusy() || robot.fleft.isBusy() || robot.bright.isBusy() || robot.bleft.isBusy() || robot.lift.isBusy());
+        return !(robot.fright.isBusy() && robot.fleft.isBusy() && robot.bright.isBusy() && robot.bleft.isBusy() || robot.lift.isBusy());
     }
 
     public void encoderComplete(){
