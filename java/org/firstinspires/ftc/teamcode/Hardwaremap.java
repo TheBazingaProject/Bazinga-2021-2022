@@ -62,7 +62,6 @@ public class Hardwaremap
     public DcMotor lift = null;
     public DcMotor spinner = null;
     public DcMotor intake = null;
-    public DcMotor mid = null;
 
     public Servo dump = null;
     public Servo claw = null;
@@ -105,7 +104,6 @@ public class Hardwaremap
         fleft = hwMap.get(DcMotor.class, "fleft");
         bright = hwMap.get(DcMotor.class, "bright");
         bleft = hwMap.get(DcMotor.class, "bleft");
-        mid = hwMap.get(DcMotor.class, "mid");
         lift = hwMap.get(DcMotor.class, "lift");
         spinner = hwMap.get(DcMotor.class, "spinner");
         intake = hwMap.get(DcMotor.class, "intake");
@@ -119,9 +117,8 @@ public class Hardwaremap
         // Direction of motors
         fright.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         fleft.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        bright.setDirection(DcMotor.Direction.FORWARD);
-        bleft.setDirection(DcMotor.Direction.REVERSE);
-        mid.setDirection(DcMotorSimple.Direction.FORWARD);
+        bright.setDirection(DcMotor.Direction.REVERSE);
+        bleft.setDirection(DcMotor.Direction.FORWARD);
         lift.setDirection(DcMotor.Direction.FORWARD);
         spinner.setDirection(DcMotor.Direction.FORWARD);
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -131,7 +128,6 @@ public class Hardwaremap
         fleft.setPower(0);
         bright.setPower(0);
         bleft.setPower(0);
-        mid.setPower(0);
         lift.setPower(0);
         spinner.setPower(0);
         intake.setPower(0);
