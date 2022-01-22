@@ -117,3 +117,11 @@ Jan 18, 2022  - Test Wheels
               - Created a new autonomous that tests the wheels to make sure that they work in all directions
               
               - the program makes the robot move forward, then backward, then strafes left and right
+
+Jan 22, 2022  - Rewire robot
+
+              - Robot was rewired so that all of the drive train motors were on one hub (expansion hub)
+              
+              - The two front wheels were reversed so we re-reversed them
+              
+              
