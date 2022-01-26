@@ -124,4 +124,13 @@ Jan 22, 2022  - Rewire robot
               
               - The two front wheels were reversed so we re-reversed them
               
+Jan 26, 2022  - Fixed wheels and test auto
+
+              - We found that the problem was that two of the wheels were wired reversed and it was re-reversed so now in the configuration and the program, we reversed them
+              
+              - Double negative = positive
+              
+              - We ran the wheels one-by-one and found out that the front two wheels were reversed
+              
+              - After we fixed the wheels, we tested auto red audience and just started tuning the measurements.
               
