@@ -134,3 +134,18 @@ Jan 26, 2022  - Fixed wheels and test auto
               
               - After we fixed the wheels, we tested auto red audience and just started tuning the measurements.
               
+Feb 5, 2022   - Fixed Tape mechanism
+
+              - Edited values for the tape mechanism for endgame
+              
+              - Added last stop (n)
+
+              - GOING TO STATES
+              
+              - WON CONTROL AWARD WOOOO
+              
+Feb 7, 2022   - Tune tape measure mechanism
+
+              - Just edited the values for the tape measure mechanism a little more for the driver
+              
+              - Mechanical problems
