@@ -60,6 +60,7 @@ public class Teleop extends OpMode{
     Hardwaremap robot       = new Hardwaremap(); // use the class created to define a Pushbot's hardware
     boolean         reverse     = false ;
     int             liftPos, liftInch, liftMax      = 0 ;
+    boolean         dpad_right_n1  = false, dpad_left_n1  = false, dpad_up_n1  = false, dpad_down_n1  = false  ;
     static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     LIFT_WHEEL_DIAMETER_IN  = 1.0 ;
@@ -103,6 +104,9 @@ public class Teleop extends OpMode{
      */
     @Override
     public void start() {
+        robot.tapeUpDown.setPosition(0);
+        robot.tapeWrist.setPosition(1);
+
     }
 
     /*
@@ -122,17 +126,17 @@ public class Teleop extends OpMode{
             reverse = true;
         }
 
-        if (reverse == true) {
-            robot.fleft.setPower(-ly - lx - rx);
-            robot.bleft.setPower(-ly + lx - rx);
-            robot.fright.setPower(-ly + lx + rx);
-            robot.bright.setPower(-ly - lx + rx);
-        }
         if (reverse == false) {
-            robot.fleft.setPower(ly + lx + rx);
-            robot.bleft.setPower(ly - lx + rx);
-            robot.fright.setPower(ly - lx - rx);
-            robot.bright.setPower(ly + lx - rx);
+            robot.fleft.setPower(-ly + lx + rx);
+            robot.bleft.setPower(-ly - lx + rx);
+            robot.fright.setPower(-ly - lx - rx);
+            robot.bright.setPower(-ly + lx - rx);
+        }
+        if (reverse == true) {
+            robot.fleft.setPower(ly - lx - rx);
+            robot.bleft.setPower(ly + lx - rx);
+            robot.fright.setPower(ly + lx + rx);
+            robot.bright.setPower(ly - lx + rx);
         }
 
         // Use gamepad left & right Bumpers to open and close the claw
@@ -147,7 +151,7 @@ public class Teleop extends OpMode{
 //        robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
 
         // Use gamepad buttons to move the arm up (Y) and down (A)
-        // gamepad 1 - driving and intake + spinner
+        // gamepad 1 - driving and intake + spinnerR
         if (gamepad1.x) {
             robot.spinner.setPower(0.9);
         } else if (gamepad1.y) {
@@ -158,7 +162,7 @@ public class Teleop extends OpMode{
 
         if (-gamepad1.right_stick_y > 0) {
             robot.intake.setPower(-0.9);
-        } else if (-gamepad2.right_stick_y < 0) {
+        } else if (-gamepad1.right_stick_y < 0) {
             robot.intake.setPower(0.9);
         } else {
             robot.intake.setPower(0);
@@ -168,26 +172,26 @@ public class Teleop extends OpMode{
         if (gamepad2.x) {
             robot.dump.setPosition(0.17);
         } else {
-            robot.dump.setPosition(0.7);
+            robot.dump.setPosition(0.8);
         }
 
-        while (gamepad2.y) {
-            robot.dump.setPosition(robot.dump.getPosition() - 0.0008);
-        }
-
-        while (gamepad2.a) {
-            robot.camera.setPosition(robot.camera.getPosition() - 0.0003);
-            if (!gamepad2.a) {
-                robot.camera.setPosition(robot.camera.getPosition());
-            }
-        }
-
-        while (gamepad2.b) {
-            robot.camera.setPosition(robot.camera.getPosition() + 0.0003);
-            if (!gamepad2.b) {
-                robot.camera.setPosition(robot.camera.getPosition());
-            }
-        }
+//        while (gamepad2.y) {
+//            robot.dump.setPosition(robot.dump.getPosition() - 0.0008);
+//        }
+//
+//        while (gamepad2.a) {
+//            robot.camera.setPosition(robot.camera.getPosition() - 0.0003);
+//            if (!gamepad2.a) {
+//                robot.camera.setPosition(robot.camera.getPosition());
+//            }
+//        }
+//
+//        while (gamepad2.b) {
+//            robot.camera.setPosition(robot.camera.getPosition() + 0.0003);
+//            if (!gamepad2.b) {
+//                robot.camera.setPosition(robot.camera.getPosition());
+//            }
+//        }
 
         if (gamepad2.right_stick_y > 0) {
             robot.lift.setPower(1);
@@ -274,10 +278,36 @@ public class Teleop extends OpMode{
 //        }
 
         // close
-        if (gamepad2.right_bumper){
-            robot.claw.setPosition(150);
+//        if (gamepad2.right_bumper){
+//            robot.claw.setPosition(150);
+//        } else if (gamepad2.left_bumper) {
+//            robot.claw.setPosition(-10);
+//        }
+
+        // tape capstone controls
+        if (gamepad2.dpad_right && !dpad_right_n1){
+            robot.tapeWrist.setPosition(robot.tapeWrist.getPosition() + 0.03);
+        } else if (gamepad2.dpad_left && !dpad_left_n1) {
+            robot.tapeWrist.setPosition(robot.tapeWrist.getPosition() - 0.03);
+        }
+
+        if (gamepad2.dpad_up && !dpad_up_n1){
+            robot.tapeUpDown.setPosition(robot.tapeUpDown.getPosition() - 0.03);
+        } else if (gamepad2.dpad_down && !dpad_down_n1) {
+            robot.tapeUpDown.setPosition(robot.tapeUpDown.getPosition() + 0.03);
+        }
+
+        dpad_right_n1 = gamepad2.dpad_right;
+        dpad_left_n1 = gamepad2.dpad_left;
+        dpad_up_n1 = gamepad2.dpad_up;
+        dpad_down_n1 = gamepad2.dpad_down;
+
+        if (gamepad2.right_bumper) {
+            robot.tapeLaunch.setPower(0.5);
         } else if (gamepad2.left_bumper) {
-            robot.claw.setPosition(-10);
+            robot.tapeLaunch.setPower(-0.5);
+        } else {
+            robot.tapeLaunch.setPower(0);
         }
 
         // Send telemetry message to signify robot running;
@@ -288,6 +318,9 @@ public class Teleop extends OpMode{
         telemetry.addData("camera", robot.camera.getPortNumber());
         telemetry.addData("trigger", gamepad1.left_trigger);
         telemetry.addData("reverse?", reverse);
+        telemetry.addData("tapeWrist", robot.tapeWrist.getPosition());
+        telemetry.addData("tapeUpDown", robot.tapeUpDown.getPosition());
+        telemetry.addData("tapeLaunch", robot.tapeLaunch.getPower());
         telemetry.addData("lift position", liftPos);
         telemetry.addData("lift height", liftInch);
         telemetry.addData("power", "Running at %3f :%3f :%3f :%3f", robot.fleft.getPower(), robot.fright.getPower(), robot.bright.getPower(), robot.bleft.getPower());
