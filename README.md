@@ -149,3 +149,17 @@ Feb 7, 2022   - Tune tape measure mechanism
               - Just edited the values for the tape measure mechanism a little more for the driver
               
               - Mechanical problems
+              
+              - The dump keeps getting stuck in teleop
+
+Feb 11, 2022  - Auto before states
+
+              - Fixed the stuck in dump problem
+              
+              - Test and tuned the RedAudience program
+              
+              - Made it strafe at the end and then move forward to fully park
+              
+              - Tested both Far programs, tuned them a little bit, both worked, and can be used
+              
+              - The big plate on the side will always be touching the wall for the autonomous' except BlueAudience
