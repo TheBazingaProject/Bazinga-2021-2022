@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -6,8 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.teamcode.Hardwaremap;
-import org.firstinspires.ftc.teamcode.Movement;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -18,8 +16,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.Hardwaremap;
-import org.firstinspires.ftc.teamcode.Movement;
+
+import java.util.List;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -35,9 +33,9 @@ import org.firstinspires.ftc.teamcode.Movement;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "AutoAudienceBlueMovement", group = "Iterative Opmode")
+@Autonomous(name = "BlueAudienceCamMove", group = "Iterative Opmode")
 //@Disabled
-public class AutoAudienceBlueMovement extends OpMode {
+public class BlueAudienceCamMove extends OpMode {
 
     // Declare OpMode members.
     Hardwaremap robot = new Hardwaremap();
@@ -47,7 +45,15 @@ public class AutoAudienceBlueMovement extends OpMode {
 
     String task = "Start";
 
-    private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
+    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+    private static final String[] LABELS = {
+            "Ball",
+            "Cube",
+            "Duck"
+    };
+    public int BarcodePosition = 1;
+    private WebcamName webcamName       = null;
+
     private static final String LABEL_FIRST_ELEMENT = "Quad";
     private static final String LABEL_SECOND_ELEMENT = "Single";
 
@@ -91,7 +97,6 @@ public class AutoAudienceBlueMovement extends OpMode {
         robot.init(hardwareMap);
         movement.init(robot);
         robot.dump.setPosition(0.8);
-        robot.claw.setPosition(0.7);
 
 //        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 //
@@ -117,22 +122,57 @@ public class AutoAudienceBlueMovement extends OpMode {
     @Override
     public void init_loop() {
 
-        // make sure the imu gyro is calibrated before continuing.
-
-        /**
-         * Activate TensorFlow Object Detection before we wait for the start command.
-         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
-         **/
-        if (first) {
-            //initVuforia();
-            //initTfod();
-
-            //if (tfod != null) {
-            //    tfod.activate();
-            //}
-
-            first = false;
-        }
+//        if (tfod != null) {
+//            // getUpdatedRecognitions() will return null if no new information is available since
+//            // the last time that call was made.
+//            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+//            if (updatedRecognitions != null) {
+//                telemetry.addData("# Object Detected", updatedRecognitions.size());
+//                if (updatedRecognitions.size() == 0) {
+//                    BarcodePosition = 1;
+//                    telemetry.addData("Barcode Position", BarcodePosition);
+//                }
+//                // step through the list of recognitions and display boundary info.
+//                int i = 0;
+//                boolean isDuckDetected = false;
+//                for (Recognition recognition : updatedRecognitions) {
+//                    telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+//                    telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+//                            recognition.getLeft(), recognition.getTop());
+//                    telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+//                            recognition.getRight(), recognition.getBottom());
+//                    i++;
+//
+//                    // check label to see if the camera sees a Duck
+//                    if (recognition.getLabel().equals("Ball")) {
+//                        isDuckDetected = true;
+//                        telemetry.addData("Object Detected", "Capstone");
+//                        if (recognition.getLeft() > 355 && recognition.getRight() > 400) {
+//                            BarcodePosition = 3;
+//                        } else if (recognition.getLeft() > 0 && recognition.getLeft() < 350 && recognition.getRight() > 180 && recognition.getRight() < 400) {
+//                            BarcodePosition = 2;
+//                        }
+//                        telemetry.addData("Barcode Position", BarcodePosition);
+//                    } else if (recognition.getLabel().equals("Duck")) {
+//                        isDuckDetected = true;
+//                        telemetry.addData("Object Detected", "Duck");
+//                        if (recognition.getLeft() > 355 && recognition.getRight() > 400) {
+//                            BarcodePosition = 3;
+//                        } else if (recognition.getLeft() > 0 && recognition.getLeft() < 350 && recognition.getRight() > 180 && recognition.getRight() < 400) {
+//                            BarcodePosition = 2;
+//                        }
+//                        telemetry.addData("Barcode Position", BarcodePosition);
+//                    } else if (updatedRecognitions.size() == 0) {
+//                        BarcodePosition = 1;
+//                        telemetry.addData("Barcode Position", BarcodePosition);
+//                    } else {
+//                        isDuckDetected = false;
+//                        telemetry.addData("Barcode Position", 1);
+//                    }
+//                }
+//                telemetry.update();
+//            }
+//        }
 
         double cutOff = 0;
 //        for (Recognition r : tfod.getRecognitions()) {
@@ -145,27 +185,14 @@ public class AutoAudienceBlueMovement extends OpMode {
      * Code to run ONCE when the driver hits PLAY
      */
     @Override
-    public void start() {
-        movement.resetEncoder();
-    }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
-    @Override
     public void loop() {
         switch (task) {
             case "Start":
                 runtime.reset();
                 //turn camera to face barcode (before match?)
                 //scan barcode using camera, save value as a variable so we can recall it later
-                task = "strafe to carousel";
+                task = "strafe out of wall";
                 break;
-
-//            case "back up from wall":
-//                movement.encoderDrive(movement.DRIVE_SPEED, 3, 3);
-//                task = "strafe to carousel";
-//                break;
 
             case "strafe to carousel":
                 if (movement.checkEncoderDone()) {
@@ -197,9 +224,9 @@ public class AutoAudienceBlueMovement extends OpMode {
                 break;
 
             case "spin duck off":
-                robot.spinner.setPower(0.4);
-                if (runtime.seconds() > 7) {
-                    robot.spinner.setPower(0);
+                robot.spinnerR.setPower(0.7);
+                if (runtime.seconds() > 4.5) {
+                    robot.spinnerR.setPower(0);
                     runtime.reset();
                     task = "align to 3-layer thingy";
                 }
@@ -208,15 +235,7 @@ public class AutoAudienceBlueMovement extends OpMode {
             case "align to 3-layer thingy":
                 if (movement.checkEncoderDone()) {
                     movement.encoderComplete();
-                    movement.encoderDrive(movement.DRIVE_SPEED, 26, 26);
-                    task = "back off wall";
-                }
-                break;
-
-            case "back off wall":
-                if (movement.checkEncoderDone()) {
-                    movement.encoderComplete();
-                    movement.encoderStrafe(movement.TURN_SPEED, -5, 5);
+                    movement.encoderDrive(movement.DRIVE_SPEED, 28, 28);
                     task = "turn to face thingy";
                 }
                 break;
@@ -232,10 +251,18 @@ public class AutoAudienceBlueMovement extends OpMode {
             case "forward to thingy":
                 if (movement.checkEncoderDone()) {
                     movement.encoderComplete();
-                    movement.encoderDrive(0.3, -27.4, -27.4);
-                    movement.lifting(movement.LIFT_SPEED, 15);
+                    if (BarcodePosition == 1) {
+                        movement.encoderDrive(0.25, -12.4, -12.4);
+                        movement.lifting(movement.LIFT_SPEED, 5);
+                    } else if (BarcodePosition == 2) {
+                        movement.encoderDrive(0.3, -13.2, -13.2);
+                        movement.lifting(movement.LIFT_SPEED, 7);
+                    } else if (BarcodePosition == 3) {
+                        movement.encoderDrive(0.3,-15, -15);
+                        movement.lifting(movement.LIFT_SPEED, 16);
+                    }
                     runtime.reset();
-                    task = "prime encoder3";
+                    task = "dumpy";
                 }
                 break;
 
@@ -247,7 +274,7 @@ public class AutoAudienceBlueMovement extends OpMode {
 //                }
 //                break;
 
-            case "prime encoder3":
+            case "reset encoder3":
                 if (movement.checkEncoderDone()) {
                     movement.encoderComplete();
                     runtime.reset();
@@ -256,10 +283,24 @@ public class AutoAudienceBlueMovement extends OpMode {
                 break;
 
             case "dumpy":
-                robot.dump.setPosition(0.15);
+                if (BarcodePosition == 1) {
+                    robot.dump.setPosition(0.2);
+                } else if (BarcodePosition == 2) {
+                    robot.dump.setPosition(0.25);
+                } else {
+                    robot.dump.setPosition(0.2);
+                }
                 if (runtime.seconds() > 4) {
                     robot.dump.setPosition(0.7);
                     runtime.reset();
+                    task = "turn to park";
+                }
+                break;
+
+            case "turn to park":
+                if (movement.checkEncoderDone()) {
+                    movement.encoderComplete();
+                    movement.encoderDrive(movement.TURN_SPEED, -25, 25);
                     task = "SPEEDY TO PARK";
                 }
                 break;
@@ -275,7 +316,13 @@ public class AutoAudienceBlueMovement extends OpMode {
             case "try for perfect park":
                 if (movement.checkEncoderDone()) {
                     movement.encoderComplete();
-                    movement.encoderStrafe(movement.TURN_SPEED, 10, -10);
+                    if (BarcodePosition == 1) {
+                        movement.encoderStrafe(movement.DRIVE_SPEED, 14, -14);
+                    } else if (BarcodePosition == 2) {
+                        movement.encoderStrafe(movement.DRIVE_SPEED, 13, -13);
+                    } else if (BarcodePosition == 3) {
+                        movement.encoderStrafe(movement.DRIVE_SPEED, 12, -12);
+                    }
                     task = "stop";
                 }
                 break;
